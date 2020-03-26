@@ -27,7 +27,7 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter Season title." :label-cols="3">
+                            <b-form-group label="Title" label-for="title" description="Please enter Season title. ( الموسم الاول - الموسم الثاني )" :label-cols="3">
                                 <b-form-input id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
                             </b-form-group>
                             <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter Season ReleaseDate." :label-cols="3">
@@ -166,6 +166,8 @@ export default {
                 var imdbId = document.getElementById("imdbId").value;
                 var SeriesTitle = document.getElementById("Series").value;
                 var title = document.getElementById("title").value;
+                var SeriesTitle = document.getElementById("Series").value;
+                title = SeriesTitle + " " + title;
                 var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
                 var dateobj = new Date(releaseDate1);
                 var releaseDate = dateobj.toISOString();

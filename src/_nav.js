@@ -6,9 +6,13 @@ export default {
       icon: 'icon-speedometer',
     },
     {
+      name: 'Imdb',
+      url: '/Imdb',
+      icon: 'icon-speedometer',
+    },
+    {
       name: 'Publishing',
       url: '/publisher',
-      admin:true,
       icon: 'icon-speedometer',
       badge: {
         variant: 'danger',

@@ -31,9 +31,8 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter season title." :label-cols="3">
-                                <b-form-input v-if="title != ''" id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
-                                <b-form-input id="title" v-else v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                            <b-form-group label="Title" label-for="title" description="Please enter season title. (الموسم الاول - الموسم الثاني )" :label-cols="3">
+                                <b-form-input id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
                             <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter season ReleaseDate." :label-cols="3">
                                 <b-form-input id="releaseDate" v-if="releaseDate != ''" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>

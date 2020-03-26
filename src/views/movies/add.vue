@@ -255,6 +255,7 @@ const Create_Subtitles = gql `
   }
 }
  `;
+
 export default {
     data() {
         return {

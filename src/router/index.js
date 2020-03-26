@@ -7,6 +7,7 @@ const DefaultContainer = () => import('@/containers/DefaultContainer')
 // Views
 const Dashboard = () => import('@/views/Dashboard')
 const publisher = () => import('@/views/publisher')
+const Imdb = () => import('@/views/Imdb')
 
 const Colors = () => import('@/views/theme/Colors')
 const Typography = () => import('@/views/theme/Typography')
@@ -103,6 +104,11 @@ function configRoutes() {
           path: 'dashboard',
           name: 'Dashboard',
           component: Dashboard
+        },
+        {
+          path: 'Imdb',
+          name: 'Imdb',
+          component: Imdb
         },
         {
           path: 'publisher',

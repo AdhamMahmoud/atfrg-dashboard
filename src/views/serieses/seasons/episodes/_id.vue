@@ -35,9 +35,8 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter episode title." :label-cols="3">
-                                <b-form-input v-if="title != ''" id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
-                                <b-form-input id="title" v-else v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                            <b-form-group label="Title" label-for="title" description="Please enter episode title. (الحلقة الاول - الحلقة الثانية )" :label-cols="3">
+                                <b-form-input id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
                             <b-form-group label="runtime" label-for="runtime" description="Please enter episode Runtime." :label-cols="3">
                                 <b-form-input id="runtime" v-if="runtime !=''" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>

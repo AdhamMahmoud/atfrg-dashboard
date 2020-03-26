@@ -52,8 +52,8 @@ import {
     AgGridVue
 } from "ag-grid-vue";
 import gql from 'graphql-tag';
-import cTable from './movies/mov-table.vue'
-import cTable2 from './serieses/series-table.vue'
+import cTable from './movies/mov-table2.vue'
+import cTable2 from './serieses/series-table2.vue'
 import cTable3 from './serieses/seasons/ep-table2.vue'
 export default {
     name: 'list',

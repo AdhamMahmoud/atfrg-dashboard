@@ -27,7 +27,7 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter Episode title." :label-cols="3">
+                            <b-form-group label="Title" label-for="title" description="Please enter Episode title. (الحلقة الاول - الحلقة الثانية )" :label-cols="3">
                                 <b-form-input id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
                             </b-form-group>
                             <b-form-group label="runtime" label-for="runtime" description="Please enter Episode Runtime." :label-cols="3">

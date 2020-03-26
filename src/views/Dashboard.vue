@@ -1,7 +1,7 @@
 <template>
   <div class="animated fadeIn">
     <b-row>
-    <b-col md="12"> <h1 class="newTitle">Atfrg.Online</h1></b-col>
+    <b-col md="12"> <h1 class="newTitle"> <img class="atfrg-logo" src="@/assets/logo.svg" alt="Atfrg.online"></h1></b-col>
     </b-row>
   </div>
 </template>
@@ -134,7 +134,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   /* IE fix */
   #card-chart-01, #card-chart-02 {
     width: 100% !important;
@@ -143,6 +143,9 @@ export default {
     text-align: center;
     font-size: 6rem;
     color: #8e8e8e;
-    margin-top:4rem;
+    margin-top:2rem;
+    img{
+      height:300px
+    }
   }
 </style>
