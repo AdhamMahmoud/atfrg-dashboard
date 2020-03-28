@@ -71,6 +71,21 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
+                            <b-form-group label="Production" label-for="Production" description="Please Select movie Production." :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Production" :plain="true" required :options="[
+                                    'UNKNOWN',
+                                    'MARVEL',
+                                    'NETFLIX',
+                                    'HBO',
+                                    'BBC',
+                                    'DISNEY',
+                                    'FOX',
+                                    'SONY',
+                                    ]" value="UNKNOWN">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="Trailer Youtube ID" label-for="trailerPath" description="Please Movie Trailer Youtube ID. ( https://www.youtube.com/watch?v=ID )" :label-cols="3">
                                 <b-form-input id="trailerPath" type="text" placeholder="Enter Movie Trailer Youtube ID.." autocomplete="trailerPath"></b-form-input>
                             </b-form-group>
@@ -86,7 +101,7 @@
                                                 'HDRIP',
                                                 'HDTS',
                                                 'HDTV',
-                                              ]">
+                                              ]" value="BLURAY">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -210,7 +225,7 @@
 <script>
 import gql from 'graphql-tag';
 const Add_movie = gql `
-  mutation AddMovie($title:String!,$audience:Audience!,$imdbId:String,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$runtime:Int!,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$movieQuality:MovieQuality!,$videoQualities:[VideoQuality!],$user:ID)
+  mutation AddMovie($title:String!,$audience:Audience!,$imdbId:String,$Production:Production,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$runtime:Int!,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$movieQuality:MovieQuality!,$videoQualities:[VideoQuality!],$user:ID)
   {
   createMovie(
     data: {
@@ -218,6 +233,7 @@ const Add_movie = gql `
     title:$title,
     slug:$title,
     trailerPath:$trailerPath,
+    Production:$Production
     genres:{connect:$genres},
     lang:{connect:{name:$lang}},
     posters:{
@@ -303,6 +319,9 @@ export default {
         }
     },
     methods: {
+        CheckImdp(id){
+
+        },
         AddMovie(mvie) {
             // Values
             if (this.Valadation() == true) {
@@ -328,6 +347,7 @@ export default {
                 var overview = document.getElementById("overview").value;
                 var trailerPath = document.getElementById("trailerPath").value;
                 var Quality = document.getElementById("Quality").value;
+                var Production = document.getElementById("Production").value;
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
                 // Posters
@@ -373,6 +393,7 @@ export default {
                         title: title,
                         lang: Lang,
                         imdbId: imdbId,
+                        Production:Production,
                         audience: audience,
                         releaseDate: releaseDate,
                         runtime: runtime,

@@ -68,6 +68,21 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
+                                <b-form-group label="Production" label-for="Production" description="Please Select Series Production." :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Production" :plain="true" required :options="[
+                                    'UNKNOWN',
+                                    'MARVEL',
+                                    'NETFLIX',
+                                    'HBO',
+                                    'BBC',
+                                    'DISNEY',
+                                    'FOX',
+                                    'SONY',
+                                    ]" value="UNKNOWN">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="Trailer Youtube ID" label-for="trailerPath" description="Please Movie Trailer Youtube ID. ( https://www.youtube.com/watch?v=ID )" :label-cols="3">
                                 <b-form-input id="trailerPath" type="text" placeholder="Enter Movie Trailer Youtube ID.." autocomplete="trailerPath"></b-form-input>
                             </b-form-group>
@@ -124,7 +139,7 @@
 <script>
 import gql from 'graphql-tag';
 const Add_Series = gql `
-  mutation TvSeries($title:String!,$audience:Audience!,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
+  mutation TvSeries($title:String!,$audience:Audience!,$Production:Production,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
   {
   createTvSeries(
     data: {
@@ -132,6 +147,7 @@ const Add_Series = gql `
     slug:$title,
     trailerPath:$trailerPath,
     genres:{connect:$genres},
+    Production:$Production,
     lang:{connect:{name:$lang}},
     posters:{
         create:$posters
@@ -198,6 +214,7 @@ export default {
                 var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
                 var dateobj = new Date(releaseDate1);
                 var releaseDate = dateobj.toISOString();
+                var Production = document.getElementById("Production").value;
                 const Genreselected = document.querySelectorAll('#Genre option:checked');
                 var Genre = Array.from(Genreselected).map(el => el.value);
                 // Genre
@@ -228,6 +245,7 @@ export default {
                         genres: Genres,
                         title: title,
                         lang: Lang,
+                        Production:Production,
                         audience: audience,
                         releaseDate: releaseDate,
                         overview: overview,
