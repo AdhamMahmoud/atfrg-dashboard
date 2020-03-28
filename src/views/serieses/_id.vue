@@ -519,7 +519,7 @@ export default {
         },
         GetImdp() {
             this.imdpInfo = [];
-            fetch('http://www.omdbapi.com/?i=' + this.imdbId + '&apikey=527f9c9a')
+            fetch('https://www.omdbapi.com/?i=' + this.imdbId + '&apikey=527f9c9a')
                 .then((res) => {
                     return res.json()
                 })
