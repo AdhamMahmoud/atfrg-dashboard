@@ -107,6 +107,11 @@ export default {
           icon: 'fa fa-plus'
         },
         {
+          name: 'New Season',
+          url: '/serieses/add-season',
+          icon: 'fa fa-plus'
+        },
+        {
           name: 'New Episode',
           url: '/serieses/add-episode',
           icon: 'fa fa-plus'
