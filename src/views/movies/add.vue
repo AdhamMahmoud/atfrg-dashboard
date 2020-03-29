@@ -57,7 +57,7 @@
                             </b-form-group>
                             <b-form-group label="Lang" label-for="Lang" description="Please Select movie Languages." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" v-model="lang">
+                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" value="Enlish">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -426,7 +426,7 @@ export default {
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";
-                    this.ChangesError = "Erorr Shown In Console!.";
+                     this.ChangesError = "Erorr Shown In Console!. راجع اسم الايتم او تأكد من وجودة مسبقا";
                     console.log(error);
                     this.check = false;
                 });
@@ -589,9 +589,9 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    var lang = res.Language;
-                    var la = lang.split(', ');;
-                    this.lang = la[0];
+                    // var lang = res.Language;
+                    // var la = lang.split(', ');;
+                    // this.lang = la[0];
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

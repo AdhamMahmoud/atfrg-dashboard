@@ -13,6 +13,7 @@ export default {
     {
       name: 'Publishing',
       url: '/publisher',
+      admin:true,
       icon: 'icon-speedometer',
       badge: {
         variant: 'danger',
@@ -103,11 +104,6 @@ export default {
         {
           name: 'New Series',
           url: '/serieses/add',
-          icon: 'fa fa-plus'
-        },
-        {
-          name: 'New Season',
-          url: '/serieses/add-season',
           icon: 'fa fa-plus'
         },
         {

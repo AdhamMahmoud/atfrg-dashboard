@@ -57,6 +57,7 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'TV_MA',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
@@ -530,6 +531,8 @@ export default {
                         this.audience = "PG13";
                     } else if (res.Rated == "NC-17") {
                         this.audience = "NC17";
+                    } else if(res.Rated == "TV-MA"){
+                        this.audience = "TV_MA";
                     } else {
                         this.audience = res.Rated;
                     }
@@ -539,9 +542,9 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    var lang = res.Language;
-                    var la = lang.split(', ');;
-                    this.lang = la[0];
+                    // var lang = res.Language;
+                    // var la = lang.split(', ');;
+                    // this.lang = la[0];
                      this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

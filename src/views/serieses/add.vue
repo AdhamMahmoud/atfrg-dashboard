@@ -39,6 +39,7 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'TV_MA',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
@@ -54,7 +55,7 @@
                             </b-form-group>
                             <b-form-group label="Lang" label-for="Lang" description="Please Select movie Languages." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" v-model="lang">
+                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" value="English">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -162,6 +163,35 @@ const Add_Series = gql `
   }
 }
  `;
+ const Add_Season = gql `
+  mutation Season($title:String!,$user:ID,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!],$imdbId:String)
+  {
+  createSeason(
+    data: {
+    imdbId:$imdbId,
+    title:$title,
+    slug:$title,
+    trailerPath:$trailerPath,
+    posters:{
+        create:$posters
+        },
+    releaseDate:$releaseDate,
+    publisher:{connect:{id:$user}},
+  }){
+    id
+  }
+}
+ `;
+const updateTvSeries = gql `
+  mutation Season($id:ID!,$title:String!)
+  {
+  updateTvSeries(where:{slug:$title}, data:{
+    seasons:{connect:{id:$id}}
+  }){
+    id
+  }
+}
+ `;
 export default {
     data() {
         return {
@@ -211,6 +241,7 @@ export default {
                 var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
                 var audience = document.getElementById("audience").value;
+
                 var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
                 var dateobj = new Date(releaseDate1);
                 var releaseDate = dateobj.toISOString();
@@ -256,6 +287,56 @@ export default {
                     this.ChangesError = "";
                     // Create ew Subtitles
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
+                    this.AddSeason();
+                    this.check = false;
+                }).catch((error) => {
+                    this.ChangesDone = "";
+                    this.ChangesError = "Erorr Shown In Console!. راجع اسم الايتم او تأكد من وجودة مسبقا";
+                    console.log(error);
+                    this.check = false;
+                });
+            }
+        },
+         AddSeason() {
+                var imdbId = document.getElementById("imdbId").value;
+                var SeriesTitle = document.getElementById("title").value;
+                var title = "الموسم الاول";
+                title = SeriesTitle + " " + title;
+                var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
+                var dateobj = new Date(releaseDate1);
+                var releaseDate = dateobj.toISOString();
+                var trailerPath = document.getElementById("trailerPath").value;
+                // Posters
+                var posters = [];
+                for (var i = 0; i < this.newPosters.length; i++) {
+                    var size = document.getElementById("PostersizeNew" + i + "").value;
+                    var path = document.getElementById("PosterPathNew" + i + "").value;
+                    posters.push({
+                        size: size,
+                        path: path,
+                    })
+                }
+                // Push To Database
+                this.$apollo.mutate({
+                    mutation: Add_Season,
+                    variables: {
+                        title: title,
+                        imdbId: imdbId,
+                        releaseDate: releaseDate,
+                        trailerPath: trailerPath,
+                        posters: posters,
+                        user: this.store.getters.user,
+                    },
+                }).then((data) => {
+                    this.ChangesError = "";
+                    // Add To Series
+                    this.$apollo.mutate({
+                    mutation: updateTvSeries,
+                    variables: {
+                        title: SeriesTitle,
+                        id: data.data.createSeason.id,
+                    }});
+                    this.ChangesDone = "تم اضافة الموسم الاول الان ابدأ بأضافة الحلقة الاولي";
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";
@@ -263,7 +344,6 @@ export default {
                     console.log(error);
                     this.check = false;
                 });
-            }
         },
         Valadation() {
             this.RemoveErrors();
@@ -344,10 +424,12 @@ export default {
                 .then((res) => {
                     this.imdpInfo = res;
                     this.title = res.Title;
-                    if (res.Rated == "PG-13") {
+                   if (res.Rated == "PG-13") {
                         this.audience = "PG13";
                     } else if (res.Rated == "NC-17") {
                         this.audience = "NC17";
+                    } else if(res.Rated == "TV-MA"){
+                        this.audience = "TV_MA";
                     } else {
                         this.audience = res.Rated;
                     }
@@ -361,13 +443,13 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    var lang = res.Language;
-                    var la = lang.split(', ');;
-                    this.lang = la[0];
-                                        console.log(this.lang);
-                    if(this.lang == null){
-                        this.lang = "English";
-                    }
+                    // var lang = res.Language;
+                    // var la = lang.split(', ');;
+                    // this.lang = la[0];
+                    //                     console.log(this.lang);
+                    // if(this.lang == null){
+                    //     this.lang = "English";
+                    // }
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

@@ -54,7 +54,7 @@
                             </b-form-group>
                             <b-form-group label="Lang" label-for="Lang" description="Please Select movie Languages." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" v-model="lang">
+                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" value="English">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -340,9 +340,9 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    var lang = res.Language;
-                    var la = lang.split(', ');;
-                    this.lang = la[0];
+                    // var lang = res.Language;
+                    // var la = lang.split(', ');;
+                    // this.lang = la[0];
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

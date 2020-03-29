@@ -897,9 +897,9 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    var lang = res.Language;
-                    var la = lang.split(', ');;
-                    this.lang = la[0];
+                    // var lang = res.Language;
+                    // var la = lang.split(', ');;
+                    // this.lang = la[0];
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 
