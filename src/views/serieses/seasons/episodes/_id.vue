@@ -9,9 +9,9 @@
                         <span v-if="episode.isPublished" style="color:green;margin:0 1rem;">Published</span>
                         <span v-else style="color:red;margin:0 1rem;">UnPublished</span>
                         <span v-if="store.getters.role == 'ADMIN'">
-                        <b-button v-if="episode.isPublished" @click="Unpublish(episode.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
-                        <b-button v-else @click="Publish(episode.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
-                        <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
+                            <b-button v-if="episode.isPublished" @click="Unpublish(episode.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
+                            <b-button v-else @click="Publish(episode.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
+                            <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
                         </span>
                     </div>
                     <!-- imdb  -->
@@ -35,8 +35,9 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter episode title. (الحلقة الاول - الحلقة الثانية )" :label-cols="3">
-                                <b-form-input id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
+                            <b-form-group label="Title" label-for="title" description="Please enter episode title. اطلب التعديل من الادمن" :label-cols="3">
+                                <b-form-input v-if="store.getters.role == 'ADMIN'" id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                                <b-form-input v-else id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
                             <b-form-group label="runtime" label-for="runtime" description="Please enter episode Runtime." :label-cols="3">
                                 <b-form-input id="runtime" v-if="runtime !=''" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
@@ -49,7 +50,7 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
-                        <b-form-group label="videoQualities" label-for="videoQualities" description="Please Select episode videoQualities." :label-cols="3">
+                            <b-form-group label="videoQualities" label-for="videoQualities" description="Please Select episode videoQualities." :label-cols="3">
                                 <b-input-group>
                                     <b-form-select id="videoQualities" :plain="true" :multiple="true" required :options="[
                                     'Q144',
@@ -112,7 +113,7 @@
                             <b-button @click="AddnewPoster" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Poster</b-button>
                         </div>
                     </b-card>
-                      <b-card>
+                    <b-card>
                         <div slot="header">
                             <strong>Subtitles</strong>
                         </div>
@@ -318,7 +319,7 @@ const Delete_Links = gql `
   }
 }
  `;
- const UnPublish_Episode = gql `
+const UnPublish_Episode = gql `
    mutation Episode($id: ID) {
     updateEpisode(where:{id:$id},data:{
     isPublished:false
@@ -328,7 +329,7 @@ const Delete_Links = gql `
     }
     }
  `;
-  const Publish_Episode = gql `
+const Publish_Episode = gql `
    mutation Episode($id: ID) {
     updateEpisode(where:{id:$id},data:{
     isPublished:true
@@ -448,7 +449,7 @@ export default {
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
                 // Posters
                 var posters = [];
-                for (var i = 0; i < episode.posters.length; i++) {
+                for (var i = 0; i < this.episode().posters.length; i++) {
                     var size = document.getElementById("Postersize" + i + "").value;
                     var path = document.getElementById("PosterPath" + i + "").value;
                     posters.push({
@@ -471,7 +472,7 @@ export default {
 
                 // Subtitles
                 var subtitles = [];
-                for (var i = 0; i < episode.subtitles.length; i++) {
+                for (var i = 0; i < this.episode().subtitles.length; i++) {
                     var lang = document.getElementById("SubtitleLang" + i + "").value;
                     var name = document.getElementById("SubtitleName" + i + "").value;
                     var path = document.getElementById("SubtitlePath" + i + "").value;
@@ -500,7 +501,7 @@ export default {
                 }
                 // Links
                 var links = [];
-                for (var i = 0; i < episode.links.length; i++) {
+                for (var i = 0; i < this.episode().links.length; i++) {
                     var quality = document.getElementById("LinkvideoQualities" + i + "").value;
                     var path = document.getElementById("VideoPath" + i + "").value;
                     links.push({
@@ -520,42 +521,7 @@ export default {
                         path: path,
                     })
                 }
-                // Delete Posters
-                this.$apollo.mutate({
-                    mutation: Delete_Posters,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Delete Subtitles
-                this.$apollo.mutate({
-                    mutation: Delete_Subtitles,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Delete Links
-                this.$apollo.mutate({
-                    mutation: Delete_Links,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Create ew Subtitles
-                for (var i = 0; i < subtitles.length; i++) {
-                    var name = subtitles[i].name;
-                    var langs = subtitles[i].lang;
-                    var path = subtitles[i].path;
-                    this.$apollo.mutate({
-                        mutation: Create_Subtitles,
-                        variables: {
-                            id: this.$route.params.id,
-                            Name: name,
-                            Lang: langs,
-                            Path: path
-                        }
-                    });
-                }
+
                 this.$apollo.mutate({
                     mutation: Edit_episode,
                     variables: {
@@ -564,9 +530,56 @@ export default {
                         videoQualities: videoQualities,
                         links: links,
                         posters: posters,
-                        runtime:runtime
+                        runtime: runtime
                     },
                 }).then((data) => {
+                    // Delete Posters
+                    this.$apollo.mutate({
+                        mutation: Delete_Posters,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Delete Subtitles
+                    this.$apollo.mutate({
+                        mutation: Delete_Subtitles,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Delete Links
+                    this.$apollo.mutate({
+                        mutation: Delete_Links,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Create ew Subtitles
+                    for (var i = 0; i < subtitles.length; i++) {
+                        var name = subtitles[i].name;
+                        var langs = subtitles[i].lang;
+                        var path = subtitles[i].path;
+                        this.$apollo.mutate({
+                            mutation: Create_Subtitles,
+                            variables: {
+                                id: this.$route.params.id,
+                                Name: name,
+                                Lang: langs,
+                                Path: path
+                            }
+                        });
+                    }
+                    this.$apollo.mutate({
+                        mutation: Edit_episode,
+                        variables: {
+                            id: this.$route.params.id,
+                            title: title,
+                            videoQualities: videoQualities,
+                            links: links,
+                            posters: posters,
+                            runtime: runtime
+                        },
+                    });
                     this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
@@ -583,10 +596,10 @@ export default {
             if (document.getElementById("title").value.length == 0) {
                 this.ErrorMessage("title");
                 return false;
-            }  else if (document.getElementById("videoQualities").value.length == 0) {
+            } else if (document.getElementById("videoQualities").value.length == 0) {
                 this.ErrorMessage("videoQualities");
                 return false;
-            }else if (document.getElementById("runtime").value.length == 0) {
+            } else if (document.getElementById("runtime").value.length == 0) {
                 this.ErrorMessage("runtime");
                 return false;
             }
@@ -609,7 +622,7 @@ export default {
                     return false;
                 }
             }
-               // New Posters
+            // New Posters
             for (var i = 0; i < this.newPosters.length; i++) {
                 if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
                     this.ErrorMessage("PostersizeNew" + i);
@@ -684,7 +697,7 @@ export default {
             div.parentElement.scrollIntoView(true);
         },
 
-       Unpublish(id){
+        Unpublish(id) {
             this.$apollo.mutate({
                 mutation: UnPublish_Episode,
                 variables: {
@@ -698,7 +711,7 @@ export default {
                 this.check = false;
             });
         },
-        Publish(id){
+        Publish(id) {
             this.$apollo.mutate({
                 mutation: Publish_Episode,
                 variables: {
@@ -760,7 +773,7 @@ export default {
                     this.IMDPPoster = res.Poster;
                 });
         },
-    
+
         GetLang() {
             var lan = [];
             for (var i = 0; i < this.languages.length; i++) {
@@ -779,7 +792,7 @@ export default {
         },
 
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("TV"))) {
                 this.$router.push('/');

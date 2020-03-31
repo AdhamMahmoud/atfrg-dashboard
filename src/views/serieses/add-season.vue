@@ -28,7 +28,31 @@
                         </div>
                         <b-form>
                             <b-form-group label="Title" label-for="title" description="Please enter Season title. ( الموسم الاول - الموسم الثاني )" :label-cols="3">
-                                <b-form-input id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                                   <b-input-group>
+                                    <b-form-select id="title" :plain="true" :options="[
+                                    '1 الموسم الاول',
+                                    '2 الموسم الثاني',
+                                    '3 الموسم الثالت',
+                                    '4 الموسم الرابع',
+                                    '5 الموسم الخامس',
+                                    '6 الموسم السادس',
+                                    '7 الموسم السابع',
+                                    '8 الموسم الثامن',
+                                    '9 الموسم التاسع',
+                                    '10 الموسم العاشر',
+                                    'الموسم الحادي عشر 11',
+                                    'الموسم الثاني عشر 12',
+                                    'الموسم الثالث عشر 13',
+                                    'الموسم الرابع عشر 14',
+                                    'الموسم الخامس عشر 15',
+                                    'الموسم السادس عشر 16',
+                                    '17 الموسم السابع عشر',
+                                    'الموسم الثامن عشر 18',
+                                    'الموسم التاسع عشر 19',
+                                    'الموسم العشرين 20',
+                                    ]" value="1 الموسم الاول">
+                                    </b-form-select>
+                                </b-input-group>
                             </b-form-group>
                             <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter Season ReleaseDate." :label-cols="3">
                                 <b-form-input id="releaseDate" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>

@@ -39,11 +39,13 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'TV_MA',
+                                                'Unrated',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate." :label-cols="3">
+                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate. (16 Feb 2018)" :label-cols="3">
                                 <b-form-input id="releaseDate" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
                             </b-form-group>
                             <b-form-group label="Genre" label-for="Genre" description="Please Select movie Genres." :label-cols="3">
@@ -68,6 +70,21 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
+                                <b-form-group label="Production" label-for="Production" description="Please Select Series Production." :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Production" :plain="true" required :options="[
+                                    'UNKNOWN',
+                                    'MARVEL',
+                                    'NETFLIX',
+                                    'HBO',
+                                    'BBC',
+                                    'DISNEY',
+                                    'FOX',
+                                    'SONY',
+                                    ]" value="UNKNOWN">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="Trailer Youtube ID" label-for="trailerPath" description="Please Movie Trailer Youtube ID. ( https://www.youtube.com/watch?v=ID )" :label-cols="3">
                                 <b-form-input id="trailerPath" type="text" placeholder="Enter Movie Trailer Youtube ID.." autocomplete="trailerPath"></b-form-input>
                             </b-form-group>
@@ -104,7 +121,7 @@
                         </div>
                     </b-card>
                     <div slot="footer">
-                        <b-button @click="AddAnime()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
+                        <b-button @click="AddMovie()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
                     </div>
                     <br>
                     <br>
@@ -124,7 +141,7 @@
 <script>
 import gql from 'graphql-tag';
 const Add_Series = gql `
-  mutation TvSeries($title:String!,$audience:Audience!,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
+  mutation TvSeries($title:String!,$audience:Audience!,$Production:Production,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
   {
   createTvSeries(
     data: {
@@ -132,6 +149,7 @@ const Add_Series = gql `
     slug:$title,
     trailerPath:$trailerPath,
     genres:{connect:$genres},
+    Production:$Production,
     lang:{connect:{name:$lang}},
     posters:{
         create:$posters
@@ -146,6 +164,35 @@ const Add_Series = gql `
   }
 }
  `;
+ const Add_Season = gql `
+  mutation Season($title:String!,$user:ID,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!],$imdbId:String)
+  {
+  createSeason(
+    data: {
+    imdbId:$imdbId,
+    title:$title,
+    slug:$title,
+    trailerPath:$trailerPath,
+    posters:{
+        create:$posters
+        },
+    releaseDate:$releaseDate,
+    publisher:{connect:{id:$user}},
+  }){
+    id
+  }
+}
+ `;
+const updateTvSeries = gql `
+  mutation Season($id:ID!,$title:String!)
+  {
+  updateTvSeries(where:{slug:$title}, data:{
+    seasons:{connect:{id:$id}}
+  }){
+    id
+  }
+}
+ `;
 export default {
     data() {
         return {
@@ -154,7 +201,7 @@ export default {
             languages: [],
             imdpInfo: [],
             title: "",
-            audience: [],
+            audience: "Unrated",
             overview: "",
             imdbId: "",
             releaseDate: "",
@@ -188,16 +235,19 @@ export default {
         }
     },
     methods: {
-        AddAnime() {
+
+        AddMovie(mvie) {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
                 var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
                 var audience = document.getElementById("audience").value;
+
                 var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
                 var dateobj = new Date(releaseDate1);
                 var releaseDate = dateobj.toISOString();
+                var Production = document.getElementById("Production").value;
                 const Genreselected = document.querySelectorAll('#Genre option:checked');
                 var Genre = Array.from(Genreselected).map(el => el.value);
                 // Genre
@@ -228,6 +278,7 @@ export default {
                         genres: Genres,
                         title: title,
                         lang: Lang,
+                        Production:Production,
                         audience: audience,
                         releaseDate: releaseDate,
                         overview: overview,
@@ -238,6 +289,56 @@ export default {
                     this.ChangesError = "";
                     // Create ew Subtitles
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
+                    this.AddSeason();
+                    this.check = false;
+                }).catch((error) => {
+                    this.ChangesDone = "";
+                    this.ChangesError = "Erorr Shown In Console!. راجع اسم الايتم او تأكد من وجودة مسبقا";
+                    console.log(error);
+                    this.check = false;
+                });
+            }
+        },
+         AddSeason() {
+                var imdbId = document.getElementById("imdbId").value;
+                var SeriesTitle = document.getElementById("title").value;
+                var title = "الموسم الاول";
+                title = SeriesTitle + " " + title;
+                var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
+                var dateobj = new Date(releaseDate1);
+                var releaseDate = dateobj.toISOString();
+                var trailerPath = document.getElementById("trailerPath").value;
+                // Posters
+                var posters = [];
+                for (var i = 0; i < this.newPosters.length; i++) {
+                    var size = document.getElementById("PostersizeNew" + i + "").value;
+                    var path = document.getElementById("PosterPathNew" + i + "").value;
+                    posters.push({
+                        size: size,
+                        path: path,
+                    })
+                }
+                // Push To Database
+                this.$apollo.mutate({
+                    mutation: Add_Season,
+                    variables: {
+                        title: title,
+                        imdbId: imdbId,
+                        releaseDate: releaseDate,
+                        trailerPath: trailerPath,
+                        posters: posters,
+                        user: this.store.getters.user,
+                    },
+                }).then((data) => {
+                    this.ChangesError = "";
+                    // Add To Series
+                    this.$apollo.mutate({
+                    mutation: updateTvSeries,
+                    variables: {
+                        title: SeriesTitle,
+                        id: data.data.createSeason.id,
+                    }});
+                    this.ChangesDone = "تم اضافة الموسم الاول الان ابدأ بأضافة الحلقة الاولي";
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";
@@ -245,7 +346,6 @@ export default {
                     console.log(error);
                     this.check = false;
                 });
-            }
         },
         Valadation() {
             this.RemoveErrors();
@@ -326,10 +426,12 @@ export default {
                 .then((res) => {
                     this.imdpInfo = res;
                     this.title = res.Title;
-                    if (res.Rated == "PG-13") {
+                   if (res.Rated == "PG-13") {
                         this.audience = "PG13";
                     } else if (res.Rated == "NC-17") {
                         this.audience = "NC17";
+                    } else if(res.Rated == "TV-MA"){
+                        this.audience = "TV_MA";
                     } else {
                         this.audience = res.Rated;
                     }
@@ -340,9 +442,12 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    // var lang = res.Language;
-                    // var la = lang.split(', ');;
-                    // this.lang = la[0];
+                    var lang = res.Language;
+                    var la = lang.split(', ');;
+                    this.lang = la[0];
+                     if(this.lang == ""){
+                         this.lang = "English";
+                     }
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

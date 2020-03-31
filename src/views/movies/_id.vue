@@ -9,9 +9,9 @@
                         <span v-if="movie.isPublished" style="color:green;margin:0 1rem;">Published</span>
                         <span v-else style="color:red;margin:0 1rem;">UnPublished</span>
                         <span v-if="store.getters.role == 'ADMIN'">
-                        <b-button v-if="movie.isPublished" @click="Unpublish(movie.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
-                        <b-button v-else @click="Publish(movie.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
-                        <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
+                            <b-button v-if="movie.isPublished" @click="Unpublish(movie.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
+                            <b-button v-else @click="Publish(movie.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
+                            <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
                         </span>
                     </div>
                     <!-- imdb  -->
@@ -49,6 +49,7 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                 'Unrated',
                                               ]">
                                     </b-form-select>
                                     <b-form-select id="audience" v-else v-model="movie.audience" :plain="true" :options="[
@@ -58,6 +59,7 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'Unrated',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
@@ -172,7 +174,8 @@
                             </b-form-group>
                             <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
                                 <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>                            </b-form-group>
+                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
+                            </b-form-group>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddnewPoster" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Poster</b-button>
@@ -389,7 +392,7 @@ const Delete_Links = gql `
   }
 }
  `;
- const UnPublish_Movie = gql `
+const UnPublish_Movie = gql `
    mutation Movie($id: ID) {
     updateMovie(where:{id:$id},data:{
     isPublished:false
@@ -399,7 +402,7 @@ const Delete_Links = gql `
     }
     }
  `;
-  const Publish_Movie = gql `
+const Publish_Movie = gql `
    mutation Movie($id: ID) {
     updateMovie(where:{id:$id},data:{
     isPublished:true
@@ -434,7 +437,7 @@ export default {
             Allsubtitles: [],
             AllLinks: [],
             dangerModal: false,
-            IMDPPoster:"",
+            IMDPPoster: "",
 
         }
     },
@@ -560,7 +563,7 @@ export default {
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
                 // Posters
                 var posters = [];
-                for (var i = 0; i < movie.posters.length; i++) {
+                for (var i = 0; i < this.movie().posters.length; i++) {
                     var size = document.getElementById("Postersize" + i + "").value;
                     var path = document.getElementById("PosterPath" + i + "").value;
                     posters.push({
@@ -582,11 +585,10 @@ export default {
                 }
                 // Subtitles
                 var subtitles = [];
-                for (var i = 0; i < movie.subtitles.length; i++) {
+                for (var i = 0; i < this.movie().subtitles.length; i++) {
                     var lang = document.getElementById("SubtitleLang" + i + "").value;
                     var name = document.getElementById("SubtitleName" + i + "").value;
                     var path = document.getElementById("SubtitlePath" + i + "").value;
-                    lang = lang;
                     subtitles.push({
                         lang: lang,
                         name: name,
@@ -611,7 +613,7 @@ export default {
                 }
                 // Links
                 var links = [];
-                for (var i = 0; i < movie.links.length; i++) {
+                for (var i = 0; i < this.movie().links.length; i++) {
                     var quality = document.getElementById("LinkvideoQualities" + i + "").value;
                     var path = document.getElementById("VideoPath" + i + "").value;
                     links.push({
@@ -631,42 +633,7 @@ export default {
                         path: path,
                     })
                 }
-                // Delete Posters
-                this.$apollo.mutate({
-                    mutation: Delete_Posters,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Delete Subtitles
-                this.$apollo.mutate({
-                    mutation: Delete_Subtitles,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Delete Links
-                this.$apollo.mutate({
-                    mutation: Delete_Links,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-                // Create ew Subtitles
-                for (var i = 0; i < subtitles.length; i++) {
-                    var name = subtitles[i].name;
-                    var langs = subtitles[i].lang;
-                    var path = subtitles[i].path;
-                    this.$apollo.mutate({
-                        mutation: Create_Subtitles,
-                        variables: {
-                            id: this.$route.params.id,
-                            Name: name,
-                            Lang: langs,
-                            Path: path
-                        }
-                    });
-                }
+
                 // Push To Database
                 this.$apollo.mutate({
                     mutation: Edit_movie,
@@ -687,6 +654,61 @@ export default {
                         links: links,
                     },
                 }).then((data) => {
+                    // Delete Posters
+                    this.$apollo.mutate({
+                        mutation: Delete_Posters,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Delete Subtitles
+                    this.$apollo.mutate({
+                        mutation: Delete_Subtitles,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Delete Links
+                    this.$apollo.mutate({
+                        mutation: Delete_Links,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    // Create ew Subtitles
+                    for (var i = 0; i < subtitles.length; i++) {
+                        var name = subtitles[i].name;
+                        var langs = subtitles[i].lang;
+                        var path = subtitles[i].path;
+                        this.$apollo.mutate({
+                            mutation: Create_Subtitles,
+                            variables: {
+                                id: this.$route.params.id,
+                                Name: name,
+                                Lang: langs,
+                                Path: path
+                            }
+                        });
+                    }
+                    this.$apollo.mutate({
+                        mutation: Edit_movie,
+                        variables: {
+                            id: this.$route.params.id,
+                            genres: Genres,
+                            title: title,
+                            lang: Lang,
+                            imdbId: imdbId,
+                            audience: audience,
+                            releaseDate: releaseDate,
+                            runtime: runtime,
+                            overview: overview,
+                            trailerPath: trailerPath,
+                            movieQuality: Quality,
+                            videoQualities: videoQualities,
+                            posters: posters,
+                            links: links,
+                        },
+                    });
                     this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
@@ -811,7 +833,7 @@ export default {
             div.parentNode.insertBefore(message, div.nextSibling);
             div.parentElement.scrollIntoView(true);
         },
-        Unpublish(id){
+        Unpublish(id) {
             this.$apollo.mutate({
                 mutation: UnPublish_Movie,
                 variables: {
@@ -825,7 +847,7 @@ export default {
                 this.check = false;
             });
         },
-        Publish(id){
+        Publish(id) {
             this.$apollo.mutate({
                 mutation: Publish_Movie,
                 variables: {
@@ -983,16 +1005,15 @@ export default {
 
             return lan;
         },
-        isPublished: function(){
-            if(this.movie.isPublished == true){
+        isPublished: function () {
+            if (this.movie.isPublished == true) {
                 return true
-            }
-            else{
+            } else {
                 return false;
             }
         }
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("MOVIE"))) {
                 this.$router.push('/');

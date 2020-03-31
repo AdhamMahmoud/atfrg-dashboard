@@ -9,9 +9,9 @@
                         <span v-if="series.isPublished" style="color:green;margin:0 1rem;">Published</span>
                         <span v-else style="color:red;margin:0 1rem;">UnPublished</span>
                         <span v-if="store.getters.role == 'ADMIN'">
-                        <b-button v-if="series.isPublished" @click="Unpublish(series.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
-                        <b-button v-else @click="Publish(series.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
-                        <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
+                            <b-button v-if="series.isPublished" @click="Unpublish(series.id)" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
+                            <b-button v-else @click="Publish(series.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
+                            <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
                         </span>
                     </div>
                     <!-- imdb  -->
@@ -57,6 +57,7 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'TV_MA',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
@@ -133,12 +134,13 @@
                                                 'THUMBNAIL',
                                                 'WIDE',
                                                 'FULL_SCREEN',
-                                              ]">
+                                              ]" value="THUMBNAIL">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
+                                <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
+                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
                         </b-card>
                         <div slot="footer">
@@ -210,7 +212,7 @@ const Delete_Series = gql `
    }
  `;
 
- const UnPublish_Series = gql `
+const UnPublish_Series = gql `
    mutation Series($id: ID) {
     updateTvSeries(where:{id:$id},data:{
     isPublished:false
@@ -220,7 +222,7 @@ const Delete_Series = gql `
     }
     }
  `;
-  const Publish_Series = gql `
+const Publish_Series = gql `
    mutation Series($id: ID) {
     updateTvSeries(where:{id:$id},data:{
     isPublished:true
@@ -254,7 +256,8 @@ export default {
             Allsubtitles: [],
             AllLinks: [],
             dangerModal: false,
-            tvSerieses:[],
+            tvSerieses: [],
+            IMDPPoster: "",
 
         }
     },
@@ -356,7 +359,7 @@ export default {
                 var trailerPath = document.getElementById("trailerPath").value;
                 // Posters
                 var posters = [];
-                for (var i = 0; i < series.posters.length; i++) {
+                for (var i = 0; i < this.series().posters.length; i++) {
                     var size = document.getElementById("Postersize" + i + "").value;
                     var path = document.getElementById("PosterPath" + i + "").value;
                     posters.push({
@@ -376,15 +379,7 @@ export default {
                         path: path,
                     })
                 }
-              
-                // Delete Posters
-                this.$apollo.mutate({
-                    mutation: Delete_Posters,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-       
+
                 this.$apollo.mutate({
                     mutation: Edit_Series,
                     variables: {
@@ -400,6 +395,27 @@ export default {
                     },
                 }).then((data) => {
                     this.ChangesError = "";
+                    // Delete Posters
+                    this.$apollo.mutate({
+                        mutation: Delete_Posters,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    this.$apollo.mutate({
+                        mutation: Edit_Series,
+                        variables: {
+                            id: this.$route.params.id,
+                            genres: Genres,
+                            title: title,
+                            lang: Lang,
+                            audience: audience,
+                            releaseDate: releaseDate,
+                            overview: overview,
+                            trailerPath: trailerPath,
+                            posters: posters,
+                        },
+                    });
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
                 }).catch((error) => {
@@ -427,10 +443,10 @@ export default {
             } else if (document.getElementById("overview").value.length == 0) {
                 this.ErrorMessage("overview");
                 return false;
-            }  else if (document.getElementById("trailerPath").value.length == 0) {
+            } else if (document.getElementById("trailerPath").value.length == 0) {
                 this.ErrorMessage("trailerPath");
                 return false;
-            } 
+            }
             for (var i = 0; i < this.series().posters.length; i++) {
                 if (document.getElementById("Postersize" + i).value == "Please select Quality" || document.getElementById("Postersize" + i).value.length == 0) {
                     this.ErrorMessage("Postersize" + i);
@@ -450,7 +466,7 @@ export default {
                     return false;
                 }
             }
-           return true;
+            return true;
         },
         RemoveErrors() {
             var className = "alert-danger";
@@ -470,7 +486,7 @@ export default {
             div.parentNode.insertBefore(message, div.nextSibling);
             div.parentElement.scrollIntoView(true);
         },
-        Unpublish(id){
+        Unpublish(id) {
             this.$apollo.mutate({
                 mutation: UnPublish_Series,
                 variables: {
@@ -484,7 +500,7 @@ export default {
                 this.check = false;
             });
         },
-        Publish(id){
+        Publish(id) {
             this.$apollo.mutate({
                 mutation: Publish_Series,
                 variables: {
@@ -528,6 +544,8 @@ export default {
                         this.audience = "PG13";
                     } else if (res.Rated == "NC-17") {
                         this.audience = "NC17";
+                    } else if (res.Rated == "TV-MA") {
+                        this.audience = "TV_MA";
                     } else {
                         this.audience = res.Rated;
                     }
@@ -537,9 +555,13 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    // var lang = res.Language;
-                    // var la = lang.split(', ');;
-                    // this.lang = la[0];
+                    var lang = res.Language;
+                    var la = lang.split(', ');;
+                    this.lang = la[0];
+                    if (this.lang == "") {
+                        this.lang = "English";
+                    }
+                    this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 
                 });
@@ -622,16 +644,15 @@ export default {
 
             return lan;
         },
-        isPublished: function(){
-            if(this.series.isPublished == true){
+        isPublished: function () {
+            if (this.series.isPublished == true) {
                 return true
-            }
-            else{
+            } else {
                 return false;
             }
         }
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("ANIME"))) {
                 this.$router.push('/');

@@ -13,7 +13,7 @@
                             <strong>Imdb</strong> Import
                         </div>
                         <b-form>
-                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter movie imdbId." :label-cols="3">
+                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter movie imdbId Get Your ID From https://www.imdb.com/title/IDHERE/" :label-cols="3">
                                 <b-form-input id="imdbId" type="text" v-model="imdbId" placeholder="Enter imdbId.." autocomplete="imdbId"></b-form-input>
                             </b-form-group>
                         </b-form>
@@ -39,15 +39,16 @@
                                                 'PG13',
                                                 'R',
                                                 'NC17',
+                                                'Unrated',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate." :label-cols="3">
+                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate. (16 Feb 2018)" :label-cols="3">
                                 <b-form-input id="releaseDate" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
                             </b-form-group>
                             <b-form-group label="runtime" label-for="runtime" description="Please enter movie Runtime." :label-cols="3">
-                                <b-form-input id="runtime"  v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
+                                <b-form-input id="runtime" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
                             </b-form-group>
                             <b-form-group label="Genre" label-for="Genre" description="Please Select movie Genres." :label-cols="3">
                                 <b-input-group>
@@ -57,12 +58,12 @@
                             </b-form-group>
                             <b-form-group label="Lang" label-for="Lang" description="Please Select movie Languages." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" value="Enlish">
+                                    <b-form-select id="Lang" :plain="true" required :options="GetLang()" value="English">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="overview" label-for="overview" description="Please enter movie Overview." :label-cols="3">
-                               <b-form-textarea v-model="overview" id="overview" type="text" placeholder="Enter Overview.." autocomplete="overview"></b-form-textarea>
+                                <b-form-textarea v-model="overview" id="overview" type="text" placeholder="Enter Overview.." autocomplete="overview"></b-form-textarea>
                             </b-form-group>
                         </b-form>
                     </b-card>
@@ -113,7 +114,7 @@
                                     'Q480',
                                     'Q720',
                                     'Q1080',
-                                    ]" :value="[null,'Q144']">
+                                    ]" :value="[null]">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -198,6 +199,7 @@
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
+                                <span style="color:red">( انسخ الرابط وافتحو شوف هيحمل ولا هجيبلك انو مش موجود الاول )</span>
                             </b-form-group>
                         </b-card>
                         <div slot="footer">
@@ -205,7 +207,7 @@
                         </div>
                     </b-card>
                     <div slot="footer">
-                        <b-button @click="AddMovie()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Save Changes</b-button>
+                        <b-button @click="AddMovie()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Submit</b-button>
                     </div>
                     <br>
                     <br>
@@ -280,14 +282,15 @@ export default {
             languages: [],
             imdpInfo: [],
             title: "",
-            audience: [],
+            audience: "Unrated",
+            movies: [],
             imdbId: "",
             releaseDate: "",
             runtime: "",
             Genre: [],
             lang: [],
             check: false,
-            overview:"",
+            overview: "",
             newSubtitle: [],
             newLinks: [],
             newPosters: [],
@@ -296,7 +299,7 @@ export default {
             AllPosters: [],
             Allsubtitles: [],
             AllLinks: [],
-            IMDPPoster:"",
+            IMDPPoster: "",
 
         }
     },
@@ -306,6 +309,15 @@ export default {
             genres{
               id
               name
+            }
+          }`,
+        },
+        movies: {
+            query: gql `query movies{
+            movies{
+              id
+              title
+              imdbId
             }
           }`,
         },
@@ -319,14 +331,26 @@ export default {
         }
     },
     methods: {
-        CheckImdp(id){
-
+        CheckImdp(id) {
+            this.RemoveErrors();
+            if (this.movies != null) {
+                var imdb = this.movies.findIndex(x => x.imdbId === id);
+                if (imdb != -1) {
+                    return this.movies[imdb].id;
+                }
+                return true;
+            }
+            return true;
         },
         AddMovie(mvie) {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
                 var imdbId = document.getElementById("imdbId").value;
+                if (this.CheckImdp(imdbId) != true) {
+                    this.ErrorMessage2("imdbId", this.CheckImdp(imdbId));
+                    return;
+                }
                 var title = document.getElementById("title").value;
                 var audience = document.getElementById("audience").value;
                 var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
@@ -383,7 +407,7 @@ export default {
                         path: path,
                     })
                 }
-               
+
                 // Push To Database
                 this.$apollo.mutate({
                     mutation: Add_movie,
@@ -393,7 +417,7 @@ export default {
                         title: title,
                         lang: Lang,
                         imdbId: imdbId,
-                        Production:Production,
+                        Production: Production,
                         audience: audience,
                         releaseDate: releaseDate,
                         runtime: runtime,
@@ -406,27 +430,27 @@ export default {
                     },
                 }).then((data) => {
                     this.ChangesError = "";
-                     // Create ew Subtitles
-                  var id = data.data.createMovie.id;
-                  for (var i = 0; i < subtitles.length; i++) {
-                      var name = subtitles[i].name;
-                      var langs = subtitles[i].lang;
-                      var path = subtitles[i].path;
-                      this.$apollo.mutate({
-                          mutation: Create_Subtitles,
-                          variables: {
-                              id: id,
-                              Name: name,
-                              Lang: langs,
-                              Path: path
-                          }
-                      });
-                  }
+                    // Create ew Subtitles
+                    var id = data.data.createMovie.id;
+                    for (var i = 0; i < subtitles.length; i++) {
+                        var name = subtitles[i].name;
+                        var langs = subtitles[i].lang;
+                        var path = subtitles[i].path;
+                        this.$apollo.mutate({
+                            mutation: Create_Subtitles,
+                            variables: {
+                                id: id,
+                                Name: name,
+                                Lang: langs,
+                                Path: path
+                            }
+                        });
+                    }
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";
-                     this.ChangesError = "Erorr Shown In Console!. راجع اسم الايتم او تأكد من وجودة مسبقا";
+                    this.ChangesError = "Erorr Shown In Console!. راجع اسم الايتم او تأكد من وجودة مسبقا";
                     console.log(error);
                     this.check = false;
                 });
@@ -434,11 +458,10 @@ export default {
         },
         Valadation() {
             this.RemoveErrors();
-              if (document.getElementById("imdbId").value.length == 0) {
+            if (document.getElementById("imdbId").value.length == 0) {
                 this.ErrorMessage("imdbId");
                 return false;
-            }
-             else if (document.getElementById("title").value.length == 0) {
+            } else if (document.getElementById("title").value.length == 0) {
                 this.ErrorMessage("title");
                 return false;
             } else if (document.getElementById("audience").value.length == 0) {
@@ -468,55 +491,49 @@ export default {
             }
 
             // New Posters
-            for (var i = 0; i <  this.newPosters.length; i++) {
+            for (var i = 0; i < this.newPosters.length; i++) {
                 if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
                     this.ErrorMessage("PostersizeNew" + i);
                     return false;
-                }
-                else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
+                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
                     this.ErrorMessage("PosterPathNew" + i);
                     return false;
-                } 
+                }
             }
-            if( this.newPosters.length == 0)
-            {
-              this.ErrorMessage("NewPosters");
-              return false;
+            if (this.newPosters.length == 0) {
+                this.ErrorMessage("NewPosters");
+                return false;
             }
-            if( this.newSubtitle.length == 0)
-            {
-              this.ErrorMessage("NewSubtitles");
-              return false;
+            if (this.newSubtitle.length == 0) {
+                this.ErrorMessage("NewSubtitles");
+                return false;
             }
-            if( this.newLinks.length == 0)
-            {
-              this.ErrorMessage("NewLinks");
-              return false;
+            if (this.newLinks.length == 0) {
+                this.ErrorMessage("NewLinks");
+                return false;
             }
             // New Subtitle
             for (var i = 0; i < this.newSubtitle.length; i++) {
                 if (document.getElementById("SubtitleLangNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleLangNew" + i);
                     return false;
-                }
-                else if (document.getElementById("SubtitleNameNew" + i).value.length == 0) {
+                } else if (document.getElementById("SubtitleNameNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleNameNew" + i);
                     return false;
-                }  else if (document.getElementById("SubtitlePathNew" + i).value.length == 0) {
+                } else if (document.getElementById("SubtitlePathNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitlePathNew" + i);
                     return false;
-                } 
+                }
             }
             // New Liks
             for (var i = 0; i < this.newLinks.length; i++) {
                 if (document.getElementById("LinkvideoQualitiesNew" + i).value.length == 0) {
                     this.ErrorMessage("LinkvideoQualitiesNew" + i);
                     return false;
-                }
-                else if (document.getElementById("VideoPathNew" + i).value.length == 0) {
+                } else if (document.getElementById("VideoPathNew" + i).value.length == 0) {
                     this.ErrorMessage("VideoPathNew" + i);
                     return false;
-                } 
+                }
             }
             return true;
         },
@@ -538,13 +555,24 @@ export default {
             div.parentNode.insertBefore(message, div.nextSibling);
             div.parentElement.scrollIntoView(true);
         },
+        ErrorMessage2(ele, id) {
+            var div = document.getElementById(ele);
+            var message = document.createElement('div'); // create new textarea
+            message.setAttribute('role', 'alert');
+            message.setAttribute('class', 'alert alert-danger');
+            message.setAttribute('style', 'margin:0.5rem 0;width:100%;');
+            message.innerHTML = "This Movie Is Already Registerd. <a href='./#/movies/" + id + "'>Check It</a>";
+
+            div.parentNode.insertBefore(message, div.nextSibling);
+            div.parentElement.scrollIntoView(true);
+        },
         AddnewPoster() {
             this.newPosters.push({});
         },
         RemoveNewPoster(id) {
             this.newPosters.splice(id, 1);
         },
-  
+
         AddnewSubtitle() {
             this.newSubtitle.push({});
         },
@@ -566,6 +594,10 @@ export default {
             return date;
         },
         GetImdp() {
+            if (this.CheckImdp(this.imdbId) != true) {
+                this.ErrorMessage2("imdbId", this.CheckImdp(this.imdbId));
+                return;
+            }
             this.imdpInfo = [];
             fetch('https://www.omdbapi.com/?i=' + this.imdbId + '&apikey=527f9c9a')
                 .then((res) => {
@@ -589,9 +621,12 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    // var lang = res.Language;
-                    // var la = lang.split(', ');;
-                    // this.lang = la[0];
+                    var lang = res.Language;
+                    var la = lang.split(', ');;
+                    this.lang = la[0];
+                    if(this.lang == ""){
+                         this.lang = "English";
+                     }
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 
@@ -629,7 +664,7 @@ export default {
         }
 
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("MOVIE"))) {
                 this.$router.push('/');

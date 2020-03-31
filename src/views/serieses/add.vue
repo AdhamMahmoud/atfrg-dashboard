@@ -40,11 +40,12 @@
                                                 'R',
                                                 'NC17',
                                                 'TV_MA',
+                                                'Unrated',
                                               ]">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate." :label-cols="3">
+                            <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter movie ReleaseDate. (16 Feb 2018)" :label-cols="3">
                                 <b-form-input id="releaseDate" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
                             </b-form-group>
                             <b-form-group label="Genre" label-for="Genre" description="Please Select movie Genres." :label-cols="3">
@@ -200,7 +201,7 @@ export default {
             languages: [],
             imdpInfo: [],
             title: "",
-            audience: [],
+            audience: "Unrated",
             overview: "",
             imdbId: "",
             releaseDate: "",
@@ -234,6 +235,7 @@ export default {
         }
     },
     methods: {
+
         AddMovie(mvie) {
             // Values
             if (this.Valadation() == true) {
@@ -433,9 +435,6 @@ export default {
                     } else {
                         this.audience = res.Rated;
                     }
-                    if(this.audience == null){
-                        this.audience = "NC17";
-                    }
                     this.releaseDate = res.Released;
                     this.overview = res.Plot;
                     var gen = res.Genre;
@@ -443,13 +442,12 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    // var lang = res.Language;
-                    // var la = lang.split(', ');;
-                    // this.lang = la[0];
-                    //                     console.log(this.lang);
-                    // if(this.lang == null){
-                    //     this.lang = "English";
-                    // }
+                    var lang = res.Language;
+                    var la = lang.split(', ');;
+                    this.lang = la[0];
+                     if(this.lang == ""){
+                         this.lang = "English";
+                     }
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

@@ -28,7 +28,47 @@
                         </div>
                         <b-form>
                             <b-form-group label="Title" label-for="title" description="Please enter Episode title. (الحلقة الاول - الحلقة الثانية)" :label-cols="3">
-                                <b-form-input id="title" v-model="title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                                 <b-input-group>
+                                    <b-form-select id="title" :plain="true" :options="[
+                                    'الحلقة الاولي 1',
+                                    '2 الحلقة الثانية',
+                                    '3 الحلقة الثالثة',
+                                    '4 الحلقة الرابعة',
+                                    '5 الحلقة الخامسة',
+                                    '6 الحلقة السادسة',
+                                    '7 الحلقة السابعة',
+                                    '8 الحلقة الثامنة',
+                                    '9 الحلقة التاسعة',
+                                    '10 الحلقة العاشرة',
+                                    '11 الحلقة',
+                                    '12 الحلقة',
+                                    '13 الحلقة',
+                                    '14 الحلقة',
+                                    '15 الحلقة',
+                                    '16 الحلقة',
+                                    '17 الحلقة',
+                                    '18 الحلقة',
+                                    '19 الحلقة',
+                                    '20 الحلقة',
+                                    '21 الحلقة',
+                                    '22 الحلقة',
+                                    '23 الحلقة',
+                                    '24 الحلقة',
+                                    '25 الحلقة',
+                                    '26 الحلقة',
+                                    '27 الحلقة',
+                                    '28 الحلقة',
+                                    '29 الحلقة',
+                                    '30 الحلقة',
+                                    '31 الحلقة',
+                                    '32 الحلقة',
+                                    '33 الحلقة',
+                                    '34 الحلقة',
+                                    '35 الحلقة',
+     
+                                    ]" value="الحلقة الاولي 1">
+                                    </b-form-select>
+                                </b-input-group>
                             </b-form-group>
                             <b-form-group label="runtime" label-for="runtime" description="Please enter Episode Runtime." :label-cols="3">
                                 <b-form-input id="runtime" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
@@ -60,7 +100,7 @@
                                     'Q480',
                                     'Q720',
                                     'Q1080',
-                                    ]" :value="[null,'Q144']">
+                                    ]" :value="[null]">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -146,6 +186,7 @@
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
+                                  <span style="color:red">( انسخ الرابط وافتحو في المتصفح عندك شوف هيحمل ولا هجيبلك انو مش موجود الاول )</span>
                             </b-form-group>
                         </b-card>
                         <div slot="footer">
@@ -340,6 +381,7 @@ export default {
                                 Path: path
                             }
                         });
+                    }
                     // Add To Epis
                     this.$apollo.mutate({
                     mutation: updateTvSeries,
@@ -347,7 +389,6 @@ export default {
                         title: SeasonTitle,
                         id: data.data.createEpisode.id,
                     }});
-                    }
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
                     this.check = false;
                 }).catch((error) => {

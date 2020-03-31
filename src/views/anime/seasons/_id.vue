@@ -4,6 +4,10 @@
         <b-row>
             <b-col cols="12">
                 <b-card v-for="season in seasons" :key="season.id" header-tag="header" footer-tag="footer">
+                    <b-button @click="ShowSeasons = !ShowSeasons" size="sm" style="float:right" variant="primary">عرض الحلقات</b-button>
+                    <br> <br>
+                    <c-table v-if="ShowSeasons" :table-data="season.episodes" :per-page=20 :fields="fields" hover striped bordered small fixed caption="<i class='fa fa-align-justify'></i> Season Episode"></c-table>
+
                     <div slot="header">
                         <i class="fa fa-align-justify"></i><strong> {{season.title}}</strong>
                         <span v-if="store.getters.role == 'ADMIN'">
@@ -31,8 +35,10 @@
                             <strong>Main</strong> Information
                         </div>
                         <b-form>
-                            <b-form-group label="Title" label-for="title" description="Please enter season title." :label-cols="3">
-                                <b-form-input id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
+                            <b-form-group label="Title" label-for="title" description="Please enter season title. اطلب التعديل من الادمن" :label-cols="3">
+
+                                <b-form-input v-if="store.getters.role == 'ADMIN'" id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
+                                <b-form-input v-else id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
                             <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter season ReleaseDate." :label-cols="3">
                                 <b-form-input id="releaseDate" v-if="releaseDate != ''" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
@@ -113,7 +119,6 @@
                         Are You Sure Deleting <span style="color:green">{{season.title}}</span> season ? <br>
                         You Can UnPublish It (Choose Cancel).
                     </b-modal>
-                    <c-table :table-data="season.episodes" :per-page=20 :fields="fields" hover striped bordered small fixed caption="<i class='fa fa-align-justify'></i> Season Episode"></c-table>
 
                 </b-card>
 
@@ -175,6 +180,7 @@ export default {
             languages: [],
             imdpInfo: [],
             title: "",
+            ShowSeasons: false,
             audience: [],
             imdbId: "",
             releaseDate: "",
@@ -304,7 +310,7 @@ export default {
                 var trailerPath = document.getElementById("trailerPath").value;
                 // Posters
                 var posters = [];
-                for (var i = 0; i < season.posters.length; i++) {
+                for (var i = 0; i < this.season().posters.length; i++) {
                     var size = document.getElementById("Postersize" + i + "").value;
                     var path = document.getElementById("PosterPath" + i + "").value;
                     posters.push({
@@ -325,14 +331,6 @@ export default {
                     })
                 }
 
-                // Delete Posters
-                this.$apollo.mutate({
-                    mutation: Delete_Posters,
-                    variables: {
-                        id: this.$route.params.id,
-                    }
-                });
-
                 this.$apollo.mutate({
                     mutation: Edit_season,
                     variables: {
@@ -343,6 +341,24 @@ export default {
                         posters: posters,
                     },
                 }).then((data) => {
+
+                    // Delete Posters
+                    this.$apollo.mutate({
+                        mutation: Delete_Posters,
+                        variables: {
+                            id: this.$route.params.id,
+                        }
+                    });
+                    this.$apollo.mutate({
+                        mutation: Edit_season,
+                        variables: {
+                            id: this.$route.params.id,
+                            title: title,
+                            releaseDate: releaseDate,
+                            trailerPath: trailerPath,
+                            posters: posters,
+                        },
+                    });
                     this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
@@ -469,7 +485,7 @@ export default {
         },
 
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("ANIME"))) {
                 this.$router.push('/');
