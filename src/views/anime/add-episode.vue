@@ -100,7 +100,7 @@
                                     'Q480',
                                     'Q720',
                                     'Q1080',
-                                    ]" :value="[null]">
+                                    ]" v-model="videoQualities">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -273,7 +273,7 @@ export default {
             imdbId: "",
             runtime: "",
             check: false,
-
+            videoQualities:[],
             newSubtitle: [],
             newLinks: [],
             newPosters: [],

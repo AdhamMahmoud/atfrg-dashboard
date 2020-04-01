@@ -114,7 +114,7 @@
                                     'Q480',
                                     'Q720',
                                     'Q1080',
-                                    ]" :value="[null]">
+                                    ]" v-model="videoQualities">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -199,7 +199,7 @@
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
-                                <span style="color:red">( انسخ الرابط وافتحو شوف هيحمل ولا هجيبلك انو مش موجود الاول )</span>
+                                <span style="color:red">( اتأكد من اسم الملف كويس ومن صيغة الفديو  )</span>
                             </b-form-group>
                         </b-card>
                         <div slot="footer">
@@ -291,6 +291,7 @@ export default {
             lang: [],
             check: false,
             overview: "",
+            videoQualities:[],
             newSubtitle: [],
             newLinks: [],
             newPosters: [],

@@ -4,6 +4,10 @@
     <b-table :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="items" :fields="captions" :current-page="currentPage" :per-page="perPage" @row-clicked="rowClicked">
         <template slot="Changes" slot-scope="data">
             <router-link :to="'./episodes/' + data.item.id"><i class='fa fa-edit'></i></router-link>
+              <span v-if="store.getters.role == 'ADMIN'">
+            <b-button v-if="data.item.isPublished" @click="Unpublish(data.item.id), data.item.isPublished = false" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>
+            <b-button v-else @click="Publish(data.item.id), data.item.isPublished = true" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
+          </span>
         </template>
         <template slot="createdAt" slot-scope="data">
             <b-badge :variant="updateReleaseDate(data.item.createdAt)">{{updateReleaseDate(data.item.createdAt)}}</b-badge>
@@ -40,6 +44,26 @@ const REMOVE_TODO = gql `
        title
      }
    }
+ `;
+  const UnPublish_ep = gql `
+   mutation Series($id: ID) {
+    updateEpisode(where:{id:$id},data:{
+    isPublished:false
+    })
+    {
+        id
+    }
+    }
+ `;
+  const Publish_ep = gql `
+   mutation Series($id: ID) {
+    updateEpisode(where:{id:$id},data:{
+    isPublished:true
+    })
+    {
+        id
+    }
+    }
  `;
 export default {
     name: 'c-table',
@@ -104,6 +128,30 @@ export default {
         }
     },
     methods: {
+          Unpublish(id){
+            this.$apollo.mutate({
+                mutation: UnPublish_ep,
+                variables: {
+                    id: id,
+                },
+            }).then((data) => {
+            }).catch((error) => {
+                this.ChangesError = "Erorr Shown In Console!.";
+                this.check = false;
+            });
+        },
+        Publish(id){
+            this.$apollo.mutate({
+                mutation: Publish_ep,
+                variables: {
+                    id: id,
+                },
+            }).then((data) => {
+            }).catch((error) => {
+                this.ChangesError = "Erorr Shown In Console!.";
+                this.check = false;
+            });
+        },
         updateReleaseDate(date) {
             var currentTime = new Date(date);
             var month = ("0" + (currentTime.getMonth() + 1)).slice(-2);

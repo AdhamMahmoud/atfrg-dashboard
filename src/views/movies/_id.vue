@@ -661,13 +661,6 @@ export default {
                             id: this.$route.params.id,
                         }
                     });
-                    // Delete Subtitles
-                    this.$apollo.mutate({
-                        mutation: Delete_Subtitles,
-                        variables: {
-                            id: this.$route.params.id,
-                        }
-                    });
                     // Delete Links
                     this.$apollo.mutate({
                         mutation: Delete_Links,
@@ -675,40 +668,51 @@ export default {
                             id: this.$route.params.id,
                         }
                     });
-                    // Create ew Subtitles
-                    for (var i = 0; i < subtitles.length; i++) {
-                        var name = subtitles[i].name;
-                        var langs = subtitles[i].lang;
-                        var path = subtitles[i].path;
-                        this.$apollo.mutate({
-                            mutation: Create_Subtitles,
-                            variables: {
-                                id: this.$route.params.id,
-                                Name: name,
-                                Lang: langs,
-                                Path: path
-                            }
-                        });
-                    }
+                    // Delete Subtitles
                     this.$apollo.mutate({
-                        mutation: Edit_movie,
+                        mutation: Delete_Subtitles,
                         variables: {
                             id: this.$route.params.id,
-                            genres: Genres,
-                            title: title,
-                            lang: Lang,
-                            imdbId: imdbId,
-                            audience: audience,
-                            releaseDate: releaseDate,
-                            runtime: runtime,
-                            overview: overview,
-                            trailerPath: trailerPath,
-                            movieQuality: Quality,
-                            videoQualities: videoQualities,
-                            posters: posters,
-                            links: links,
-                        },
+                        }
+                    }).then((data) => {
+                        // Create ew Subtitles
+                        for (var i = 0; i < subtitles.length; i++) {
+                            var name = subtitles[i].name;
+                            var langs = subtitles[i].lang;
+                            var path = subtitles[i].path;
+                            this.$apollo.mutate({
+                                mutation: Create_Subtitles,
+                                variables: {
+                                    id: this.$route.params.id,
+                                    Name: name,
+                                    Lang: langs,
+                                    Path: path
+                                }
+                            }).then((data) => {
+
+                                this.$apollo.mutate({
+                                    mutation: Edit_movie,
+                                    variables: {
+                                        id: this.$route.params.id,
+                                        genres: Genres,
+                                        title: title,
+                                        lang: Lang,
+                                        imdbId: imdbId,
+                                        audience: audience,
+                                        releaseDate: releaseDate,
+                                        runtime: runtime,
+                                        overview: overview,
+                                        trailerPath: trailerPath,
+                                        movieQuality: Quality,
+                                        videoQualities: videoQualities,
+                                        posters: posters,
+                                        links: links,
+                                    },
+                                });
+                            });
+                        }
                     });
+
                     this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;

@@ -75,32 +75,25 @@
                             </b-form-group>
                             <b-form-group label="Series" label-for="Series" description="Please Choose Series." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select @keyup="GetSeasons()" v-model="Series" id="Series" :plain="true" :options="GetSerieses()" value="Choose Series">
+                                    <b-form-select @keyup="GetSeasons()" v-model="Series" id="Series" :plain="true" :options="GetSerieses()">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="Season" label-for="Season" description="Please Choose Season." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Season" :plain="true" :options="GetSeasons()" value="Choose Season">
+                                    <b-form-select id="Season" :plain="true" :options="GetSeasons()">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                        </b-form>
-                    </b-card>
-                    <b-card>
-                        <div slot="header">
-                            <strong>Sub</strong> Information
-                        </div>
-                        <b-form>
-                            <b-form-group label="videoQualities" label-for="videoQualities" description="Please Select Episode videoQualities." :label-cols="3">
+                                   <b-form-group label="videoQualities" label-for="videoQualities" description="Please Select Episode videoQualities." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="videoQualities" :plain="true" :multiple="true" required :options="[
+                                    <b-form-select id="videoQualities" :multiple="true" :options="[
                                     'Q144',
                                     'Q360',
                                     'Q480',
                                     'Q720',
                                     'Q1080',
-                                    ]" :value="[null]">
+                                    ]" v-model="videoQualities">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -172,7 +165,7 @@
                                 <strong>{{link.quality}}</strong> Video Link
                                 <b-button @click="RemoveNewLink(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
                             </div>
-                            <b-form-group label="Video Qualities" label-for="LinkvideoQualities" description="Please Select Episode videoQualities." :label-cols="3">
+                            <b-form-group label="Video Qualities 2" label-for="LinkvideoQualities" description="Please Select Episode videoQualities." :label-cols="3">
                                 <b-input-group>
                                     <b-form-select :id="'LinkvideoQualitiesNew' + index" :plain="true" :options="[
                                     'Q144',
@@ -273,7 +266,7 @@ export default {
             imdbId: "",
             runtime: "",
             check: false,
-
+            videoQualities:[],
             newSubtitle: [],
             newLinks: [],
             newPosters: [],
