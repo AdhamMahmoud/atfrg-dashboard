@@ -201,6 +201,7 @@
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                                 <span style="color:red">( اتأكد من اسم الملف كويس ومن صيغة الفديو  )</span>
                             </b-form-group>
+                             <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddNewLink" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Link</b-button>
@@ -342,6 +343,32 @@ export default {
                 return true;
             }
             return true;
+        },
+        validLink(path) {      
+            var type = path.slice(-3).toLowerCase();
+            path = path.substring(0, path.length - 3) + type
+            return path;
+        },
+        LinkToken(path){
+            var crypto = require('crypto');
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
+            // Set the time of expiry to one hour from now
+            var expires = Math.round(Date.now() / 1000) + 43200;
+
+            var hashableBase = securityKey + newpath + expires;
+            // Generate and encode the token 
+            var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
+            var token = new Buffer(md5String, 'binary').toString('base64');
+            token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+            var url = 'https://atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            return url;
+        },
+        CheckLink(id){
+            var link = document.getElementById(id).value;
+            link = this.validLink(link);
+            link = this.LinkToken(link);
+              window.open(link, "_blank");   
         },
         AddMovie(mvie) {
             // Values

@@ -39,9 +39,43 @@
                                 <b-form-input v-if="store.getters.role == 'ADMIN'" id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
                                 <b-form-input v-else id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
-                            <b-form-group label="runtime" label-for="runtime" description="Please enter episode Runtime." :label-cols="3">
-                                <b-form-input id="runtime" v-if="runtime !=''" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
-                                <b-form-input id="runtime" v-else v-model="episode.runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
+                              <b-form-group label="Order" label-for="Order" description="Please enter Episode Order. ( ترتيب الحلقة)" :label-cols="3">
+                                   <b-input-group>
+                                    <b-form-select id="Order" :plain="true" :options="[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '10',
+                                    '11',
+                                    '12',
+                                    '13',
+                                    '14',
+                                    '15',
+                                    '16',
+                                    '17',
+                                    '18',
+                                    '19',
+                                    '20',
+                                    '21',
+                                    '22',
+                                    '23',
+                                    '24',
+                                    '25',
+                                    '26',
+                                    '27',
+                                    '28',
+                                    '29',
+                                    '30',
+                                    '31',
+                                    ]" :value="episode.order">
+                                    </b-form-select>
+                                </b-input-group>
                             </b-form-group>
                         </b-form>
                     </b-card>
@@ -183,6 +217,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPath' + index" :value="link.path" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                             <b-button @click="CheckLink('VideoPath' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <b-card v-for="(link ,index) in newLinks" :key="link.id">
                             <div slot="header">
@@ -204,6 +239,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                               <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddNewLink" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Link</b-button>
@@ -234,12 +270,12 @@
 <script>
 import gql from 'graphql-tag';
 const Edit_episode = gql `
-  mutation updateEpisode($id:ID,$title:String!,$runtime:Int!,$posters:[ImageCreateInput!],$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!])
+  mutation updateEpisode($id:ID,$title:String!,$posters:[ImageCreateInput!],$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!])
   {
   updateEpisode(where:{id:$id}, data:{
     title:$title,
     slug:$title,
-    runtime:$runtime
+    runtime:0,
     isPublished:false,
     links:{
      create:$links
@@ -377,6 +413,7 @@ export default {
                         title
                         slug
                         runtime
+                        order
                         isPublished
                         posters{
                             size
@@ -444,7 +481,7 @@ export default {
                 this.check = true;
                 var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
-                var runtime = parseInt(document.getElementById("runtime").value);
+        
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
                 // Posters
@@ -530,7 +567,6 @@ export default {
                         videoQualities: videoQualities,
                         links: links,
                         posters: posters,
-                        runtime: runtime
                     },
                 }).then((data) => {
                     // Delete Posters
@@ -576,7 +612,6 @@ export default {
                                         videoQualities: videoQualities,
                                         links: links,
                                         posters: posters,
-                                        runtime: runtime
                                     },
                                 }).then((data) => {
 
@@ -603,9 +638,6 @@ export default {
                 return false;
             } else if (document.getElementById("videoQualities").value.length == 0) {
                 this.ErrorMessage("videoQualities");
-                return false;
-            } else if (document.getElementById("runtime").value.length == 0) {
-                this.ErrorMessage("runtime");
                 return false;
             }
             for (var i = 0; i < this.episode().posters.length; i++) {
@@ -778,7 +810,32 @@ export default {
                     this.IMDPPoster = res.Poster;
                 });
         },
+         validLink(path) {
+            var type = path.slice(-3).toLowerCase();
+            path = path.substring(0, path.length - 3) + type
+            return path;
+        },
+        LinkToken(path) {
+            var crypto = require('crypto');
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
+            // Set the time of expiry to one hour from now
+            var expires = Math.round(Date.now() / 1000) + 43200;
 
+            var hashableBase = securityKey + newpath + expires;
+            // Generate and encode the token 
+            var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
+            var token = new Buffer(md5String, 'binary').toString('base64');
+            token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+            var url = 'https://atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            return url;
+        },
+        CheckLink(id) {
+            var link = document.getElementById(id).value;
+            link = this.validLink(link);
+            link = this.LinkToken(link);
+            window.open(link, "_blank");
+        },
         GetLang() {
             var lan = [];
             for (var i = 0; i < this.languages.length; i++) {

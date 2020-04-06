@@ -30,16 +30,16 @@
                             <b-form-group label="Title" label-for="title" description="Please enter Season title. ( الموسم الاول - الموسم الثاني )" :label-cols="3">
                                    <b-input-group>
                                     <b-form-select id="title" :plain="true" :options="[
-                                    '1 الموسم الاول',
-                                    '2 الموسم الثاني',
-                                    '3 الموسم الثالت',
-                                    '4 الموسم الرابع',
-                                    '5 الموسم الخامس',
-                                    '6 الموسم السادس',
-                                    '7 الموسم السابع',
-                                    '8 الموسم الثامن',
-                                    '9 الموسم التاسع',
-                                    '10 الموسم العاشر',
+                                    'الموسم الاول',
+                                    'الموسم الثاني',
+                                    'الموسم الثالت',
+                                    'الموسم الرابع',
+                                    'الموسم الخامس',
+                                    'الموسم السادس',
+                                    'الموسم السابع',
+                                    'الموسم الثامن',
+                                    'الموسم التاسع',
+                                    'الموسم العاشر',
                                     'الموسم الحادي عشر 11',
                                     'الموسم الثاني عشر 12',
                                     'الموسم الثالث عشر 13',
@@ -50,7 +50,30 @@
                                     'الموسم الثامن عشر 18',
                                     'الموسم التاسع عشر 19',
                                     'الموسم العشرين 20',
-                                    ]" value="1 الموسم الاول">
+                                    ]" value="الموسم الاول">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
+                              <b-form-group label="Order" label-for="Order" description="Please enter Season Order. ( ترتيب الموسم)" :label-cols="3">
+                                   <b-input-group>
+                                    <b-form-select id="Order" :plain="true" :options="[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '10',
+                                    '11',
+                                    '12',
+                                    '13',
+                                    '14',
+                                    '15',
+                                    '16',
+                                    ]" value="1">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
@@ -126,12 +149,13 @@
 <script>
 import gql from 'graphql-tag';
 const Add_Season = gql `
-  mutation Season($title:String!,$user:ID,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!],$imdbId:String)
+  mutation Season($title:String!,$user:ID,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!],$imdbId:String,$order:Int)
   {
   createSeason(
     data: {
     imdbId:$imdbId,
     title:$title,
+    order:$order
     slug:$title,
     trailerPath:$trailerPath,
     posters:{
@@ -196,6 +220,7 @@ export default {
                 var releaseDate = dateobj.toISOString();
                 var trailerPath = document.getElementById("trailerPath").value;
                 // Posters
+                var Order = parseInt(document.getElementById("Order").value);
                 var posters = [];
                 for (var i = 0; i < this.newPosters.length; i++) {
                     var size = document.getElementById("PostersizeNew" + i + "").value;
@@ -214,6 +239,7 @@ export default {
                         releaseDate: releaseDate,
                         trailerPath: trailerPath,
                         posters: posters,
+                        order:Order,
                         user: this.store.getters.user,
                     },
                 }).then((data) => {
@@ -242,6 +268,9 @@ export default {
                 return false;
             } else if (document.getElementById("title").value.length == 0) {
                 this.ErrorMessage("title");
+                return false;
+            }  else if (document.getElementById("Order").value.length == 0) {
+                this.ErrorMessage("Order");
                 return false;
             } else if (document.getElementById("releaseDate").value.length == 0) {
                 this.ErrorMessage("releaseDate");

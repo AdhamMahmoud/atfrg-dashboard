@@ -93,6 +93,21 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
+                             <b-form-group label="Production" label-for="Production" description="Please Select Series Production." :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Production" :plain="true" required :options="[
+                                    'UNKNOWN',
+                                    'MARVEL',
+                                    'NETFLIX',
+                                    'HBO',
+                                    'BBC',
+                                    'DISNEY',
+                                    'FOX',
+                                    'SONY',
+                                    ]" value="UNKNOWN">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="Trailer Youtube ID" label-for="trailerPath" description="Please series Trailer Youtube ID. ( https://www.youtube.com/watch?v=ID )" :label-cols="3">
                                 <b-form-input id="trailerPath" :value="series.trailerPath" type="text" placeholder="Enter series Trailer Youtube ID.." autocomplete="trailerPath"></b-form-input>
                             </b-form-group>
@@ -171,10 +186,12 @@
 <script>
 import gql from 'graphql-tag';
 const Edit_Series = gql `
-  mutation updateTvSeries($id:ID,$title:String!,$audience:Audience!,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
+  mutation updateTvSeries($id:ID,$title:String!,$Production:Production,$audience:Audience!,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!])
   {
   updateTvSeries(where:{id:$id}, data:{
     title:$title,
+    slug:$title,
+    Production:$Production,
     trailerPath:$trailerPath,
     genres:{set:$genres},
     lang:{update:{name:$lang}},
@@ -330,12 +347,14 @@ export default {
                 this.check = false;
             });
         },
+        
         SaveChanges(series) {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
                 var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
+                var Production = document.getElementById("Production").value;
                 var audience = document.getElementById("audience").value;
                 if (document.getElementById("releaseDate").value != this.series().releaseDate) {
                     var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
@@ -392,6 +411,7 @@ export default {
                         overview: overview,
                         trailerPath: trailerPath,
                         posters: posters,
+                        Production:Production,
                     },
                 }).then((data) => {
                     this.ChangesError = "";
@@ -414,10 +434,12 @@ export default {
                             overview: overview,
                             trailerPath: trailerPath,
                             posters: posters,
+                            Production:Production,
                         },
-                    });
-                    this.ChangesDone = "Data Hass Been Updated Successfuly.";
-                    this.check = false;
+                    }).then((data) => {
+                        this.ChangesDone = "Data Hass Been Updated Successfuly.";
+                        this.check = false;
+                    });     
                 }).catch((error) => {
                     this.ChangesDone = "";
                     this.ChangesError = "Erorr Shown In Console!.";

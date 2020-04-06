@@ -40,6 +40,29 @@
                                 <b-form-input v-if="store.getters.role == 'ADMIN'" id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
                                 <b-form-input v-else id="title" v-model="season.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
+                                <b-form-group label="Order" label-for="Order" description="Please enter Season Order. ( ترتيب الموسم)" :label-cols="3">
+                                   <b-input-group>
+                                    <b-form-select id="Order" :plain="true" :options="[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '10',
+                                    '11',
+                                    '12',
+                                    '13',
+                                    '14',
+                                    '15',
+                                    '16',
+                                    ]" :value="season.order">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="ReleaseDate" label-for="releaseDate" description="Please enter season ReleaseDate." :label-cols="3">
                                 <b-form-input id="releaseDate" v-if="releaseDate != ''" v-model="releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
                                 <b-form-input id="releaseDate" v-else v-model="season.releaseDate" type="datetime" placeholder="Enter ReleaseDate.." autocomplete="releaseDate"></b-form-input>
@@ -132,11 +155,12 @@
 import gql from 'graphql-tag';
 import cTable from './ep-table.vue'
 const Edit_season = gql `
-  mutation updateSeason($id:ID,$title:String!,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!])
+  mutation updateSeason($id:ID,$title:String!,$releaseDate:DateTime!,$trailerPath:String,$posters:[ImageCreateInput!],$order:Int)
   {
   updateSeason(where:{id:$id}, data:{
     title:$title,
     trailerPath:$trailerPath,
+    order:$order
     posters:{
         create:$posters
         },
@@ -227,6 +251,7 @@ export default {
                         title
                         slug
                         imdbId
+                        order
                         posters{
                             size
                             path
@@ -299,6 +324,7 @@ export default {
                 this.check = true;
                 var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
+                var Order = parseInt(document.getElementById("Order").value);
                 if (document.getElementById("releaseDate").value != this.season().releaseDate) {
                     var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
                     var dateobj = new Date(releaseDate1);
@@ -337,6 +363,7 @@ export default {
                         id: this.$route.params.id,
                         title: title,
                         releaseDate: releaseDate,
+                        order:Order,
                         trailerPath: trailerPath,
                         posters: posters,
                     },
@@ -358,10 +385,11 @@ export default {
                             trailerPath: trailerPath,
                             posters: posters,
                         },
-                    });
-                    this.ChangesError = "";
+                    }).then((data) =>{
+                         this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
+                    })
                 }).catch((error) => {
                     this.ChangesDone = "";
                     this.ChangesError = "Erorr Shown In Console!.";

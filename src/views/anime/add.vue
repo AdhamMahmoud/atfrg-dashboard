@@ -13,7 +13,7 @@
                             <strong>Imdb</strong> Import
                         </div>
                         <b-form>
-                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter Anime imdbId." :label-cols="3">
+                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter Series imdbId." :label-cols="3">
                                 <b-form-input id="imdbId" type="text" v-model="imdbId" placeholder="Enter imdbId.." autocomplete="imdbId"></b-form-input>
                             </b-form-group>
                         </b-form>

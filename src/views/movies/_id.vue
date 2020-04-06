@@ -99,6 +99,21 @@
                             <strong>Sub</strong> Information
                         </div>
                         <b-form>
+                              <b-form-group label="Production" label-for="Production" description="Please Select Series Production." :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Production" :plain="true" required :options="[
+                                    'UNKNOWN',
+                                    'MARVEL',
+                                    'NETFLIX',
+                                    'HBO',
+                                    'BBC',
+                                    'DISNEY',
+                                    'FOX',
+                                    'SONY',
+                                    ]" value="UNKNOWN">
+                                    </b-form-select>
+                                </b-input-group>
+                            </b-form-group>
                             <b-form-group label="Trailer Youtube ID" label-for="trailerPath" description="Please Movie Trailer Youtube ID. ( https://www.youtube.com/watch?v=ID )" :label-cols="3">
                                 <b-form-input id="trailerPath" :value="movie.trailerPath" type="text" placeholder="Enter Movie Trailer Youtube ID.." autocomplete="trailerPath"></b-form-input>
                             </b-form-group>
@@ -251,6 +266,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPath' + index" :value="link.path" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                              <b-button @click="CheckLink('VideoPath' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <b-card v-for="(link ,index) in newLinks" :key="link.id">
                             <div slot="header">
@@ -272,6 +288,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                             <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddNewLink" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Link</b-button>
@@ -301,13 +318,14 @@
 <script>
 import gql from 'graphql-tag';
 const Edit_movie = gql `
-  mutation MoviesEdit($id:ID,$title:String!,$audience:Audience!,$imdbId:String,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$runtime:Int!,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$movieQuality:MovieQuality!,$videoQualities:[VideoQuality!])
+  mutation MoviesEdit($id:ID,$title:String!,$Production:Production,$audience:Audience!,$imdbId:String,$overview:String,$releaseDate:DateTime!,$trailerPath:String,$runtime:Int!,$lang:String,$genres:[GenreWhereUniqueInput!],$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$movieQuality:MovieQuality!,$videoQualities:[VideoQuality!])
   {
   updateMovie(where:{id:$id}, data:{
     imdbId:$imdbId,
     title:$title,
     trailerPath:$trailerPath,
     genres:{set:$genres},
+    Production:$Production,
     lang:{update:{name:$lang}},
     posters:{
         create:$posters
@@ -527,6 +545,32 @@ export default {
                 this.check = false;
             });
         },
+          validLink(path) {      
+            var type = path.slice(-3).toLowerCase();
+            path = path.substring(0, path.length - 3) + type
+            return path;
+        },
+          LinkToken(path){
+            var crypto = require('crypto');
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
+            // Set the time of expiry to one hour from now
+            var expires = Math.round(Date.now() / 1000) + 43200;
+
+            var hashableBase = securityKey + newpath + expires;
+            // Generate and encode the token 
+            var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
+            var token = new Buffer(md5String, 'binary').toString('base64');
+            token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+            var url = 'https://atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            return url;
+        },
+        CheckLink(id){
+            var link = document.getElementById(id).value;
+            link = this.validLink(link);
+            link = this.LinkToken(link);
+              window.open(link, "_blank");   
+        },
         SaveChanges(movie) {
             // Values
             if (this.Valadation() == true) {
@@ -536,6 +580,7 @@ export default {
                     imdbId = this.movie().imdbId;
                 }
                 var title = document.getElementById("title").value;
+                var Production = document.getElementById("Production").value;
                 var audience = document.getElementById("audience").value;
                 if (document.getElementById("releaseDate").value != this.movie().releaseDate) {
                     var releaseDate1 = document.getElementById("releaseDate").value + " 00:00 UTC";
@@ -646,6 +691,7 @@ export default {
                         audience: audience,
                         releaseDate: releaseDate,
                         runtime: runtime,
+                        Production:Production,
                         overview: overview,
                         trailerPath: trailerPath,
                         movieQuality: Quality,
@@ -698,6 +744,7 @@ export default {
                                         title: title,
                                         lang: Lang,
                                         imdbId: imdbId,
+                                        Production:Production,
                                         audience: audience,
                                         releaseDate: releaseDate,
                                         runtime: runtime,

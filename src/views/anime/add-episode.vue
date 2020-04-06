@@ -7,20 +7,6 @@
                     <div slot="header">
                         <i class="fa fa-align-justify"></i><strong> New Episode</strong>
                     </div>
-                    <!-- imdb  -->
-                    <b-card>
-                        <div slot="header">
-                            <strong>Imdb</strong> Import
-                        </div>
-                        <b-form>
-                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter Episode imdbId." :label-cols="3">
-                                <b-form-input id="imdbId" type="text" v-model="imdbId" placeholder="Enter imdbId.." autocomplete="imdbId"></b-form-input>
-                            </b-form-group>
-                        </b-form>
-                        <div slot="footer">
-                            <b-button @click="GetImdp()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Get Information</b-button>
-                        </div>
-                    </b-card>
                     <!-- Main Information -->
                     <b-card>
                         <div slot="header">
@@ -28,18 +14,18 @@
                         </div>
                         <b-form>
                             <b-form-group label="Title" label-for="title" description="Please enter Episode title. (الحلقة الاول - الحلقة الثانية)" :label-cols="3">
-                                 <b-input-group>
+                                <b-input-group>
                                     <b-form-select id="title" :plain="true" :options="[
-                                    'الحلقة الاولي 1',
-                                    '2 الحلقة الثانية',
-                                    '3 الحلقة الثالثة',
-                                    '4 الحلقة الرابعة',
-                                    '5 الحلقة الخامسة',
-                                    '6 الحلقة السادسة',
-                                    '7 الحلقة السابعة',
-                                    '8 الحلقة الثامنة',
-                                    '9 الحلقة التاسعة',
-                                    '10 الحلقة العاشرة',
+                                    'الحلقة الاولي',
+                                    'الحلقة الثانية',
+                                    'الحلقة الثالثة',
+                                    'الحلقة الرابعة',
+                                    'الحلقة الخامسة',
+                                    'الحلقة السادسة',
+                                    'الحلقة السابعة',
+                                    'الحلقة الثامنة',
+                                    'الحلقة التاسعة',
+                                    'الحلقة العاشرة',
                                     '11 الحلقة',
                                     '12 الحلقة',
                                     '13 الحلقة',
@@ -65,36 +51,64 @@
                                     '33 الحلقة',
                                     '34 الحلقة',
                                     '35 الحلقة',
-     
+
                                     ]" value="الحلقة الاولي 1">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                            <b-form-group label="runtime" label-for="runtime" description="Please enter Episode Runtime." :label-cols="3">
-                                <b-form-input id="runtime" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
+                            <b-form-group label="Order" label-for="Order" description="Please enter Episode Order. ( ترتيب الحلقة)" :label-cols="3">
+                                <b-input-group>
+                                    <b-form-select id="Order" :plain="true" :options="[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '10',
+                                    '11',
+                                    '12',
+                                    '13',
+                                    '14',
+                                    '15',
+                                    '16',
+                                    '17',
+                                    '18',
+                                    '19',
+                                    '20',
+                                    '21',
+                                    '22',
+                                    '23',
+                                    '24',
+                                    '25',
+                                    '26',
+                                    '27',
+                                    '28',
+                                    '29',
+                                    '30',
+                                    '31',
+                                    ]" value="1">
+                                    </b-form-select>
+                                </b-input-group>
                             </b-form-group>
                             <b-form-group label="Series" label-for="Series" description="Please Choose Series." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select @keyup="GetSeasons()" v-model="Series" id="Series" :plain="true" :options="GetSerieses()" value="Choose Series">
+                                    <b-form-select @keyup="GetSeasons()" v-model="Series" id="Series" :plain="true" :options="GetSerieses()">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="Season" label-for="Season" description="Please Choose Season." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="Season" :plain="true" :options="GetSeasons()" value="Choose Season">
+                                    <b-form-select id="Season" :plain="true" :options="GetSeasons()">
                                     </b-form-select>
                                 </b-input-group>
                             </b-form-group>
-                        </b-form>
-                    </b-card>
-                    <b-card>
-                        <div slot="header">
-                            <strong>Sub</strong> Information
-                        </div>
-                        <b-form>
                             <b-form-group label="videoQualities" label-for="videoQualities" description="Please Select Episode videoQualities." :label-cols="3">
                                 <b-input-group>
-                                    <b-form-select id="videoQualities" :plain="true" :multiple="true" required :options="[
+                                    <b-form-select id="videoQualities" :multiple="true" :options="[
                                     'Q144',
                                     'Q360',
                                     'Q480',
@@ -105,36 +119,6 @@
                                 </b-input-group>
                             </b-form-group>
                         </b-form>
-                    </b-card>
-                    <b-card id="NewPosters">
-                        <div slot="header">
-                            <strong>Posters</strong>
-                        </div>
-                        <b-card v-for="(poster,index) in newPosters" :key="poster.id">
-                            <div slot="header">
-                                <strong>{{poster.size}}</strong> Poster
-                                <b-button @click="RemoveNewPoster(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
-                            </div>
-                            <b-form-group label="Poster Size" label-for="Postersize" description="Please Choose Poster Size." :label-cols="3">
-                                <b-input-group>
-                                    <b-form-select :id="'PostersizeNew'+ index" :plain="true" :options="[
-                                                'Please select Quality',
-                                                'THUMBNAIL',
-                                                'WIDE',
-                                                'FULL_SCREEN',
-                                              ]" value="THUMBNAIL">
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                            <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-
-                            </b-form-group>
-                        </b-card>
-                        <div slot="footer">
-                            <b-button @click="AddnewPoster" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Poster</b-button>
-                        </div>
                     </b-card>
                     <b-card id="NewSubtitles">
                         <div slot="header">
@@ -172,7 +156,7 @@
                                 <strong>{{link.quality}}</strong> Video Link
                                 <b-button @click="RemoveNewLink(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
                             </div>
-                            <b-form-group label="Video Qualities" label-for="LinkvideoQualities" description="Please Select Episode videoQualities." :label-cols="3">
+                            <b-form-group label="Video Qualities 2" label-for="LinkvideoQualities" description="Please Select Episode videoQualities." :label-cols="3">
                                 <b-input-group>
                                     <b-form-select :id="'LinkvideoQualitiesNew' + index" :plain="true" :options="[
                                     'Q144',
@@ -186,8 +170,8 @@
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
-                                  <span style="color:red">( انسخ الرابط وافتحو في المتصفح عندك شوف هيحمل ولا هجيبلك انو مش موجود الاول )</span>
                             </b-form-group>
+                            <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddNewLink" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Link</b-button>
@@ -214,19 +198,20 @@
 <script>
 import gql from 'graphql-tag';
 const Add_Epsiode = gql `
-  mutation AddEpsiode($title:String!,$runtime:Int!,$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$videoQualities:[VideoQuality!])
+  mutation AddEpsiode($title:String!,$posters:[ImageCreateInput!],$links:[VideoLinksCreateInput!],$videoQualities:[VideoQuality!], $order:Int)
   {
   createEpisode(
     data: {
     title:$title,
     slug:$title,
+    order:$order
     posters:{
         create:$posters
         },
     links:{
      create:$links
     },
-    runtime:$runtime,
+    runtime:0,
     isPublished:false,
     videoQualities:{set:$videoQualities}
   }){
@@ -250,7 +235,7 @@ const Create_Subtitles = gql `
   }
 }
  `;
- const updateTvSeries = gql `
+const updateTvSeries = gql `
   mutation updateSeason($id:ID!,$title:String!)
   {
   updateSeason(where:{slug:$title}, data:{
@@ -266,14 +251,14 @@ export default {
             loaded: false,
             genres: [],
             languages: [],
-            Series:"",
+            Series: "",
             imdpInfo: [],
             title: "",
             audience: [],
             imdbId: "",
             runtime: "",
             check: false,
-            videoQualities:[],
+            videoQualities: [],
             newSubtitle: [],
             newLinks: [],
             newPosters: [],
@@ -283,7 +268,7 @@ export default {
             Allsubtitles: [],
             AllLinks: [],
             IMDPPoster: "",
-            tvSerieses:[],
+            tvSerieses: [],
 
         }
     },
@@ -314,22 +299,12 @@ export default {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
-                var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
+                var Order = parseInt(document.getElementById("Order").value);
                 var SeasonTitle = document.getElementById("Season").value;
-                var runtime = parseInt(document.getElementById("runtime").value);
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
                 // Posters
-                var posters = [];
-                for (var i = 0; i < this.newPosters.length; i++) {
-                    var size = document.getElementById("PostersizeNew" + i + "").value;
-                    var path = document.getElementById("PosterPathNew" + i + "").value;
-                    posters.push({
-                        size: size,
-                        path: path,
-                    })
-                }
                 // Subtitles
                 var subtitles = [];
                 for (var i = 0; i < this.newSubtitle.length; i++) {
@@ -359,9 +334,8 @@ export default {
                     mutation: Add_Epsiode,
                     variables: {
                         title: title,
-                        runtime: runtime,
                         videoQualities: videoQualities,
-                        posters: posters,
+                        order: Order,
                         links: links,
                     },
                 }).then((data) => {
@@ -384,11 +358,12 @@ export default {
                     }
                     // Add To Epis
                     this.$apollo.mutate({
-                    mutation: updateTvSeries,
-                    variables: {
-                        title: SeasonTitle,
-                        id: data.data.createEpisode.id,
-                    }});
+                        mutation: updateTvSeries,
+                        variables: {
+                            title: SeasonTitle,
+                            id: data.data.createEpisode.id,
+                        }
+                    });
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
                     this.check = false;
                 }).catch((error) => {
@@ -404,30 +379,11 @@ export default {
             if (document.getElementById("title").value.length == 0) {
                 this.ErrorMessage("title");
                 return false;
-            } else if (document.getElementById("runtime").value.length == 0) {
-                this.ErrorMessage("runtime");
-                return false;
             } else if (document.getElementById("videoQualities").value.length == 0) {
                 this.ErrorMessage("videoQualities");
                 return false;
-            }
-
-            // New Posters
-            for (var i = 0; i < this.newPosters.length; i++) {
-                if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
-                    this.ErrorMessage("PostersizeNew" + i);
-                    return false;
-                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPathNew" + i);
-                    return false;
-                }
-            }
-            if (this.newPosters.length == 0) {
-                this.ErrorMessage("NewPosters");
-                return false;
-            }
-            if (this.newSubtitle.length == 0) {
-                this.ErrorMessage("NewSubtitles");
+            } else if (document.getElementById("Order").value.length == 0) {
+                this.ErrorMessage("Order");
                 return false;
             }
             if (this.newLinks.length == 0) {
@@ -466,22 +422,47 @@ export default {
             }
             return ser;
         },
-        GetSeasons(){
+        GetSeasons() {
             var seasons = [];
             var title = this.Series;;
             for (var i = 0; i < this.tvSerieses.length; i++) {
-                if(this.tvSerieses[i].title == title)
-                {
+                if (this.tvSerieses[i].title == title) {
                     for (var j = 0; j < this.tvSerieses[i].seasons.length; j++) {
                         seasons.push(this.tvSerieses[i].seasons[j].title);
                     }
-                    
+
                 }
-                
+
             }
             return seasons;
         },
-         GetLang() {
+        validLink(path) {
+            var type = path.slice(-3).toLowerCase();
+            path = path.substring(0, path.length - 3) + type
+            return path;
+        },
+        LinkToken(path) {
+            var crypto = require('crypto');
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
+            // Set the time of expiry to one hour from now
+            var expires = Math.round(Date.now() / 1000) + 43200;
+
+            var hashableBase = securityKey + newpath + expires;
+            // Generate and encode the token 
+            var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
+            var token = new Buffer(md5String, 'binary').toString('base64');
+            token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+            var url = 'https://atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            return url;
+        },
+        CheckLink(id) {
+            var link = document.getElementById(id).value;
+            link = this.validLink(link);
+            link = this.LinkToken(link);
+            window.open(link, "_blank");
+        },
+        GetLang() {
             var lan = [];
             for (var i = 0; i < this.languages.length; i++) {
                 lan.push({
@@ -553,7 +534,7 @@ export default {
         },
 
     },
-     mounted() {
+    mounted() {
         if (this.store.getters.role != "ADMIN") {
             if (!(this.store.getters.genreTypes.includes("ANIME"))) {
                 this.$router.push('/');
