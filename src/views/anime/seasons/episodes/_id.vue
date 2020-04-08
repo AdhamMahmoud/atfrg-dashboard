@@ -15,20 +15,7 @@
                         </span>
                     </div>
                     <!-- imdb  -->
-                    <b-card>
-                        <div slot="header">
-                            <strong>Imdb</strong> Import
-                        </div>
-                        <b-form>
-                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter episode imdbId." :label-cols="3">
-                                <b-form-input id="imdbId" type="text" v-model="imdbId" placeholder="Enter imdbId.." autocomplete="imdbId"></b-form-input>
-
-                            </b-form-group>
-                        </b-form>
-                        <div slot="footer">
-                            <b-button @click="GetImdp()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Get Information</b-button>
-                        </div>
-                    </b-card>
+                
                     <!-- Main Information -->
                     <b-card>
                         <div slot="header">
@@ -39,9 +26,43 @@
                                 <b-form-input v-if="store.getters.role == 'ADMIN'" id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title"></b-form-input>
                                 <b-form-input v-else id="title" v-model="episode.title" type="text" placeholder="Enter Title.." autocomplete="title" disabled></b-form-input>
                             </b-form-group>
-                            <b-form-group label="runtime" label-for="runtime" description="Please enter episode Runtime." :label-cols="3">
-                                <b-form-input id="runtime" v-if="runtime !=''" v-model="runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
-                                <b-form-input id="runtime" v-else v-model="episode.runtime" type="text" placeholder="Enter Runtime.." autocomplete="runtime"></b-form-input>
+                              <b-form-group label="Order" label-for="Order" description="Please enter Episode Order. ( ترتيب الحلقة)" :label-cols="3">
+                                   <b-input-group>
+                                    <b-form-select id="Order" :plain="true" :options="[
+                                    '1',
+                                    '2',
+                                    '3',
+                                    '4',
+                                    '5',
+                                    '6',
+                                    '7',
+                                    '8',
+                                    '9',
+                                    '10',
+                                    '11',
+                                    '12',
+                                    '13',
+                                    '14',
+                                    '15',
+                                    '16',
+                                    '17',
+                                    '18',
+                                    '19',
+                                    '20',
+                                    '21',
+                                    '22',
+                                    '23',
+                                    '24',
+                                    '25',
+                                    '26',
+                                    '27',
+                                    '28',
+                                    '29',
+                                    '30',
+                                    '31',
+                                    ]" :value="episode.order">
+                                    </b-form-select>
+                                </b-input-group>
                             </b-form-group>
                         </b-form>
                     </b-card>
@@ -64,55 +85,7 @@
                             </b-form-group>
                         </b-form>
                     </b-card>
-                    <b-card>
-                        <div slot="header">
-                            <strong>Posters</strong>
-                        </div>
-                        <b-card v-for="(poster,index) in episode.posters" :key="poster.id">
-                            <div slot="header">
-                                <strong>{{poster.size}}</strong> Poster
-                                <b-button @click="RemovePoster(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
-                            </div>
-                            <b-form-group label="Poster Size" label-for="Postersize" description="Please Choose Poster Size." :label-cols="3">
-                                <b-input-group>
-                                    <b-form-select :id="'Postersize'+ index" :value="poster.size" :plain="true" :options="[
-                                                'Please select Quality',
-                                                'THUMBNAIL',
-                                                'WIDE',
-                                                'FULL_SCREEN',
-                                            ]">
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                            <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input :id="'PosterPath'+ index" :value="poster.path" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                            </b-form-group>
-                        </b-card>
-                        <b-card v-for="(poster,index) in newPosters" :key="poster.id">
-                            <div slot="header">
-                                <strong>{{poster.size}}</strong> Poster
-                                <b-button @click="RemoveNewPoster(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
-                            </div>
-                            <b-form-group label="Poster Size" label-for="Postersize" description="Please Choose Poster Size." :label-cols="3">
-                                <b-input-group>
-                                    <b-form-select :id="'PostersizeNew'+ index" :plain="true" :options="[
-                                                'Please select Quality',
-                                                'THUMBNAIL',
-                                                'WIDE',
-                                                'FULL_SCREEN',
-                                              ]" value="THUMBNAIL">
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                            <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                            </b-form-group>
-                        </b-card>
-                        <div slot="footer">
-                            <b-button @click="AddnewPoster" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Poster</b-button>
-                        </div>
-                    </b-card>
+                   
                     <b-card>
                         <div slot="header">
                             <strong>Subtitles</strong>
@@ -183,6 +156,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPath' + index" :value="link.path" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                             <b-button @click="CheckLink('VideoPath' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <b-card v-for="(link ,index) in newLinks" :key="link.id">
                             <div slot="header">
@@ -204,6 +178,7 @@
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
                                 <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
+                               <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
                         <div slot="footer">
                             <b-button @click="AddNewLink" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Link</b-button>
@@ -234,20 +209,18 @@
 <script>
 import gql from 'graphql-tag';
 const Edit_episode = gql `
-  mutation updateEpisode($id:ID,$title:String!,$runtime:Int!,$posters:[ImageCreateInput!],$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!])
+  mutation updateEpisode($id:ID,$title:String!,$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!], $order:Int!)
   {
   updateEpisode(where:{id:$id}, data:{
     title:$title,
     slug:$title,
-    runtime:$runtime
+    runtime:0,
     isPublished:false,
+    order:$order,
     links:{
      create:$links
     },
     videoQualities:{set:$videoQualities}
-    posters:{
-        create:$posters
-        },
 
   }){
     id
@@ -377,6 +350,7 @@ export default {
                         title
                         slug
                         runtime
+                        order
                         isPublished
                         posters{
                             size
@@ -442,34 +416,13 @@ export default {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
-                var imdbId = document.getElementById("imdbId").value;
+                // var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
-                var runtime = parseInt(document.getElementById("runtime").value);
+                var Order = parseInt(document.getElementById("Order").value);
+
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
-                // Posters
-                var posters = [];
-                for (var i = 0; i < this.episode().posters.length; i++) {
-                    var size = document.getElementById("Postersize" + i + "").value;
-                    var path = document.getElementById("PosterPath" + i + "").value;
-                    posters.push({
-                        size: size,
-                        path: path,
-                    });
-                    this.AllPosters.push({
-                        size: size,
-                        path: path,
-                    });
-                }
-                for (var i = 0; i < this.newPosters.length; i++) {
-                    var size = document.getElementById("PostersizeNew" + i + "").value;
-                    var path = document.getElementById("PosterPathNew" + i + "").value;
-                    posters.push({
-                        size: size,
-                        path: path,
-                    })
-                }
-
+                
                 // Subtitles
                 var subtitles = [];
                 for (var i = 0; i < this.episode().subtitles.length; i++) {
@@ -529,13 +482,12 @@ export default {
                         title: title,
                         videoQualities: videoQualities,
                         links: links,
-                        posters: posters,
-                        runtime: runtime
+                        order:Order,
                     },
                 }).then((data) => {
-                    // Delete Posters
+                    // Delete Links
                     this.$apollo.mutate({
-                        mutation: Delete_Posters,
+                        mutation: Delete_Links,
                         variables: {
                             id: this.$route.params.id,
                         }
@@ -546,43 +498,36 @@ export default {
                         variables: {
                             id: this.$route.params.id,
                         }
-                    });
-                    // Delete Links
-                    this.$apollo.mutate({
-                        mutation: Delete_Links,
-                        variables: {
-                            id: this.$route.params.id,
+                    }).then((data) => {
+                        // Create ew Subtitles
+                        for (var i = 0; i < subtitles.length; i++) {
+                            var name = subtitles[i].name;
+                            var langs = subtitles[i].lang;
+                            var path = subtitles[i].path;
+                            this.$apollo.mutate({
+                                mutation: Create_Subtitles,
+                                variables: {
+                                    id: this.$route.params.id,
+                                    Name: name,
+                                    Lang: langs,
+                                    Path: path
+                                }
+                            });
                         }
-                    });
-                    // Create ew Subtitles
-                    for (var i = 0; i < subtitles.length; i++) {
-                        var name = subtitles[i].name;
-                        var langs = subtitles[i].lang;
-                        var path = subtitles[i].path;
                         this.$apollo.mutate({
-                            mutation: Create_Subtitles,
-                            variables: {
-                                id: this.$route.params.id,
-                                Name: name,
-                                Lang: langs,
-                                Path: path
-                            }
-                        });
-                    }
-                    this.$apollo.mutate({
                         mutation: Edit_episode,
                         variables: {
                             id: this.$route.params.id,
                             title: title,
                             videoQualities: videoQualities,
                             links: links,
-                            posters: posters,
-                            runtime: runtime
-                        },
+                            order:Order,
+                        }})
+                        this.ChangesError = "";
+                        this.ChangesDone = "Data Hass Been Updated Successfuly.";
+                        this.check = false;
                     });
-                    this.ChangesError = "";
-                    this.ChangesDone = "Data Hass Been Updated Successfuly.";
-                    this.check = false;
+
                 }).catch((error) => {
                     this.ChangesDone = "";
                     this.ChangesError = "Erorr Shown In Console!.";
@@ -599,39 +544,8 @@ export default {
             } else if (document.getElementById("videoQualities").value.length == 0) {
                 this.ErrorMessage("videoQualities");
                 return false;
-            } else if (document.getElementById("runtime").value.length == 0) {
-                this.ErrorMessage("runtime");
-                return false;
             }
-            for (var i = 0; i < this.episode().posters.length; i++) {
-                if (document.getElementById("Postersize" + i).value == "Please select Quality" || document.getElementById("Postersize" + i).value.length == 0) {
-                    this.ErrorMessage("Postersize" + i);
-                    return false;
-                } else if (document.getElementById("PosterPath" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPath" + i);
-                    return false;
-                }
-            }
-            // New Posters
-            for (var i = 0; i < this.newPosters.length; i++) {
-                if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
-                    this.ErrorMessage("PostersizeNew" + i);
-                    return false;
-                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPathNew" + i);
-                    return false;
-                }
-            }
-            // New Posters
-            for (var i = 0; i < this.newPosters.length; i++) {
-                if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
-                    this.ErrorMessage("PostersizeNew" + i);
-                    return false;
-                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPathNew" + i);
-                    return false;
-                }
-            }
+     
             for (var i = 0; i < this.episode().subtitles.length; i++) {
                 if (document.getElementById("SubtitleLang" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleLang" + i);
@@ -639,10 +553,7 @@ export default {
                 } else if (document.getElementById("SubtitleName" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleName" + i);
                     return false;
-                } else if (document.getElementById("SubtitlePath" + i).value.length == 0) {
-                    this.ErrorMessage("SubtitlePath" + i);
-                    return false;
-                }
+                } 
             }
             // New Subtitle
             for (var i = 0; i < this.newSubtitle.length; i++) {
@@ -652,10 +563,7 @@ export default {
                 } else if (document.getElementById("SubtitleNameNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleNameNew" + i);
                     return false;
-                } else if (document.getElementById("SubtitlePathNew" + i).value.length == 0) {
-                    this.ErrorMessage("SubtitlePathNew" + i);
-                    return false;
-                }
+                } 
             }
             for (var i = 0; i < this.episode().links.length; i++) {
                 if (document.getElementById("LinkvideoQualities" + i).value.length == 0) {
@@ -773,7 +681,32 @@ export default {
                     this.IMDPPoster = res.Poster;
                 });
         },
+         validLink(path) {
+            var type = path.slice(-3).toLowerCase();
+            path = path.substring(0, path.length - 3) + type
+            return path;
+        },
+        LinkToken(path) {
+            var crypto = require('crypto');
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
+            // Set the time of expiry to one hour from now
+            var expires = Math.round(Date.now() / 1000) + 43200;
 
+            var hashableBase = securityKey + newpath + expires;
+            // Generate and encode the token 
+            var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
+            var token = new Buffer(md5String, 'binary').toString('base64');
+            token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
+            var url = 'https://atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            return url;
+        },
+        CheckLink(id) {
+            var link = document.getElementById(id).value;
+            link = this.validLink(link);
+            link = this.LinkToken(link);
+            window.open(link, "_blank");
+        },
         GetLang() {
             var lan = [];
             for (var i = 0; i < this.languages.length; i++) {

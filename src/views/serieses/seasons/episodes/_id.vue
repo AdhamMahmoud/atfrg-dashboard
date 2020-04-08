@@ -15,20 +15,7 @@
                         </span>
                     </div>
                     <!-- imdb  -->
-                    <b-card>
-                        <div slot="header">
-                            <strong>Imdb</strong> Import
-                        </div>
-                        <b-form>
-                            <b-form-group label="imdbId" label-for="imdbId" description="Please enter episode imdbId." :label-cols="3">
-                                <b-form-input id="imdbId" type="text" v-model="imdbId" placeholder="Enter imdbId.." autocomplete="imdbId"></b-form-input>
-
-                            </b-form-group>
-                        </b-form>
-                        <div slot="footer">
-                            <b-button @click="GetImdp()" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> Get Information</b-button>
-                        </div>
-                    </b-card>
+                
                     <!-- Main Information -->
                     <b-card>
                         <div slot="header">
@@ -98,55 +85,7 @@
                             </b-form-group>
                         </b-form>
                     </b-card>
-                    <b-card>
-                        <div slot="header">
-                            <strong>Posters</strong>
-                        </div>
-                        <b-card v-for="(poster,index) in episode.posters" :key="poster.id">
-                            <div slot="header">
-                                <strong>{{poster.size}}</strong> Poster
-                                <b-button @click="RemovePoster(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
-                            </div>
-                            <b-form-group label="Poster Size" label-for="Postersize" description="Please Choose Poster Size." :label-cols="3">
-                                <b-input-group>
-                                    <b-form-select :id="'Postersize'+ index" :value="poster.size" :plain="true" :options="[
-                                                'Please select Quality',
-                                                'THUMBNAIL',
-                                                'WIDE',
-                                                'FULL_SCREEN',
-                                            ]">
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                            <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input :id="'PosterPath'+ index" :value="poster.path" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                            </b-form-group>
-                        </b-card>
-                        <b-card v-for="(poster,index) in newPosters" :key="poster.id">
-                            <div slot="header">
-                                <strong>{{poster.size}}</strong> Poster
-                                <b-button @click="RemoveNewPoster(index)" style="float:right" size="sm" variant="danger">Delete</b-button>
-                            </div>
-                            <b-form-group label="Poster Size" label-for="Postersize" description="Please Choose Poster Size." :label-cols="3">
-                                <b-input-group>
-                                    <b-form-select :id="'PostersizeNew'+ index" :plain="true" :options="[
-                                                'Please select Quality',
-                                                'THUMBNAIL',
-                                                'WIDE',
-                                                'FULL_SCREEN',
-                                              ]" value="THUMBNAIL">
-                                    </b-form-select>
-                                </b-input-group>
-                            </b-form-group>
-                            <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
-                                <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                            </b-form-group>
-                        </b-card>
-                        <div slot="footer">
-                            <b-button @click="AddnewPoster" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Poster</b-button>
-                        </div>
-                    </b-card>
+                   
                     <b-card>
                         <div slot="header">
                             <strong>Subtitles</strong>
@@ -270,20 +209,18 @@
 <script>
 import gql from 'graphql-tag';
 const Edit_episode = gql `
-  mutation updateEpisode($id:ID,$title:String!,$posters:[ImageCreateInput!],$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!])
+  mutation updateEpisode($id:ID,$title:String!,$videoQualities:[VideoQuality!],$links:[VideoLinksCreateInput!], $order:Int!)
   {
   updateEpisode(where:{id:$id}, data:{
     title:$title,
     slug:$title,
     runtime:0,
     isPublished:false,
+    order:$order,
     links:{
      create:$links
     },
     videoQualities:{set:$videoQualities}
-    posters:{
-        create:$posters
-        },
 
   }){
     id
@@ -479,34 +416,13 @@ export default {
             // Values
             if (this.Valadation() == true) {
                 this.check = true;
-                var imdbId = document.getElementById("imdbId").value;
+                // var imdbId = document.getElementById("imdbId").value;
                 var title = document.getElementById("title").value;
-        
+                var Order = parseInt(document.getElementById("Order").value);
+
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
-                // Posters
-                var posters = [];
-                for (var i = 0; i < this.episode().posters.length; i++) {
-                    var size = document.getElementById("Postersize" + i + "").value;
-                    var path = document.getElementById("PosterPath" + i + "").value;
-                    posters.push({
-                        size: size,
-                        path: path,
-                    });
-                    this.AllPosters.push({
-                        size: size,
-                        path: path,
-                    });
-                }
-                for (var i = 0; i < this.newPosters.length; i++) {
-                    var size = document.getElementById("PostersizeNew" + i + "").value;
-                    var path = document.getElementById("PosterPathNew" + i + "").value;
-                    posters.push({
-                        size: size,
-                        path: path,
-                    })
-                }
-
+                
                 // Subtitles
                 var subtitles = [];
                 for (var i = 0; i < this.episode().subtitles.length; i++) {
@@ -566,16 +482,9 @@ export default {
                         title: title,
                         videoQualities: videoQualities,
                         links: links,
-                        posters: posters,
+                        order:Order,
                     },
                 }).then((data) => {
-                    // Delete Posters
-                    this.$apollo.mutate({
-                        mutation: Delete_Posters,
-                        variables: {
-                            id: this.$route.params.id,
-                        }
-                    });
                     // Delete Links
                     this.$apollo.mutate({
                         mutation: Delete_Links,
@@ -603,24 +512,20 @@ export default {
                                     Lang: langs,
                                     Path: path
                                 }
-                            }).then((data) => {
-                                this.$apollo.mutate({
-                                    mutation: Edit_episode,
-                                    variables: {
-                                        id: this.$route.params.id,
-                                        title: title,
-                                        videoQualities: videoQualities,
-                                        links: links,
-                                        posters: posters,
-                                    },
-                                }).then((data) => {
-
-                                    this.ChangesError = "";
-                                    this.ChangesDone = "Data Hass Been Updated Successfuly.";
-                                    this.check = false;
-                                });
                             });
                         }
+                        this.$apollo.mutate({
+                        mutation: Edit_episode,
+                        variables: {
+                            id: this.$route.params.id,
+                            title: title,
+                            videoQualities: videoQualities,
+                            links: links,
+                            order:Order,
+                        }})
+                        this.ChangesError = "";
+                        this.ChangesDone = "Data Hass Been Updated Successfuly.";
+                        this.check = false;
                     });
 
                 }).catch((error) => {
@@ -640,35 +545,7 @@ export default {
                 this.ErrorMessage("videoQualities");
                 return false;
             }
-            for (var i = 0; i < this.episode().posters.length; i++) {
-                if (document.getElementById("Postersize" + i).value == "Please select Quality" || document.getElementById("Postersize" + i).value.length == 0) {
-                    this.ErrorMessage("Postersize" + i);
-                    return false;
-                } else if (document.getElementById("PosterPath" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPath" + i);
-                    return false;
-                }
-            }
-            // New Posters
-            for (var i = 0; i < this.newPosters.length; i++) {
-                if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
-                    this.ErrorMessage("PostersizeNew" + i);
-                    return false;
-                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPathNew" + i);
-                    return false;
-                }
-            }
-            // New Posters
-            for (var i = 0; i < this.newPosters.length; i++) {
-                if (document.getElementById("PostersizeNew" + i).value == "Please select Quality" || document.getElementById("PostersizeNew" + i).value.length == 0) {
-                    this.ErrorMessage("PostersizeNew" + i);
-                    return false;
-                } else if (document.getElementById("PosterPathNew" + i).value.length == 0) {
-                    this.ErrorMessage("PosterPathNew" + i);
-                    return false;
-                }
-            }
+     
             for (var i = 0; i < this.episode().subtitles.length; i++) {
                 if (document.getElementById("SubtitleLang" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleLang" + i);
@@ -676,10 +553,7 @@ export default {
                 } else if (document.getElementById("SubtitleName" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleName" + i);
                     return false;
-                } else if (document.getElementById("SubtitlePath" + i).value.length == 0) {
-                    this.ErrorMessage("SubtitlePath" + i);
-                    return false;
-                }
+                } 
             }
             // New Subtitle
             for (var i = 0; i < this.newSubtitle.length; i++) {
@@ -689,10 +563,7 @@ export default {
                 } else if (document.getElementById("SubtitleNameNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleNameNew" + i);
                     return false;
-                } else if (document.getElementById("SubtitlePathNew" + i).value.length == 0) {
-                    this.ErrorMessage("SubtitlePathNew" + i);
-                    return false;
-                }
+                } 
             }
             for (var i = 0; i < this.episode().links.length; i++) {
                 if (document.getElementById("LinkvideoQualities" + i).value.length == 0) {

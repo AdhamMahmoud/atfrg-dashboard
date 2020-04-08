@@ -161,6 +161,7 @@ const Edit_season = gql `
     title:$title,
     trailerPath:$trailerPath,
     order:$order
+    slug:$title
     posters:{
         create:$posters
         },
@@ -258,7 +259,7 @@ export default {
                         }
                         trailerPath
                         releaseDate
-                        episodes {
+                        episodes(orderBy: order_ASC) {
                             id
                             createdAt
                             title
