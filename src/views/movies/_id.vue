@@ -326,7 +326,7 @@ const Edit_movie = gql `
     trailerPath:$trailerPath,
     genres:{set:$genres},
     Production:$Production,
-    lang:{update:{name:$lang}},
+    lang:{connect:{name:$lang}},
     posters:{
         create:$posters
         },
@@ -600,7 +600,7 @@ export default {
                         name: name,
                     })
                 }
-                var Lang = document.getElementById("Lang").value;
+                var LangSub = document.getElementById("Lang").value;
                 var overview = document.getElementById("overview").value;
                 var trailerPath = document.getElementById("trailerPath").value;
                 var Quality = document.getElementById("Quality").value;
@@ -686,7 +686,7 @@ export default {
                         id: this.$route.params.id,
                         genres: Genres,
                         title: title,
-                        lang: Lang,
+                        lang: LangSub,
                         imdbId: imdbId,
                         audience: audience,
                         releaseDate: releaseDate,
@@ -720,7 +720,7 @@ export default {
                         variables: {
                             id: this.$route.params.id,
                         }
-                    }).then((data) => {
+                    });
                         // Create ew Subtitles
                         for (var i = 0; i < subtitles.length; i++) {
                             var name = subtitles[i].name;
@@ -734,15 +734,15 @@ export default {
                                     Lang: langs,
                                     Path: path
                                 }
-                            }).then((data) => {
-
-                                this.$apollo.mutate({
+                            });
+                        }
+                          this.$apollo.mutate({
                                     mutation: Edit_movie,
                                     variables: {
                                         id: this.$route.params.id,
                                         genres: Genres,
                                         title: title,
-                                        lang: Lang,
+                                        lang: LangSub,
                                         imdbId: imdbId,
                                         Production:Production,
                                         audience: audience,
@@ -755,11 +755,8 @@ export default {
                                         posters: posters,
                                         links: links,
                                     },
-                                });
-                            });
-                        }
-                    });
-
+                                });        
+            
                     this.ChangesError = "";
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
                     this.check = false;
@@ -970,9 +967,9 @@ export default {
                     for (var i = 0; i < sp.length; i++) {
                         this.Genre.push(sp[i]);
                     }
-                    // var lang = res.Language;
-                    // var la = lang.split(', ');;
-                    // this.lang = la[0];
+                    var lang = res.Language;
+                    var la = lang.split(', ');;
+                    this.lang = la[0];
                     this.IMDPPoster = res.Poster;
                     // this.lang = res.lang[0];
 

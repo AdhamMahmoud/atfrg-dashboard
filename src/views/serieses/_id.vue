@@ -194,7 +194,7 @@ const Edit_Series = gql `
     Production:$Production,
     trailerPath:$trailerPath,
     genres:{set:$genres},
-    lang:{update:{name:$lang}},
+    lang:{connect:{name:$lang}},
     posters:{
         create:$posters
         },
@@ -347,6 +347,7 @@ export default {
                 this.check = false;
             });
         },
+        
         SaveChanges(series) {
             // Values
             if (this.Valadation() == true) {
