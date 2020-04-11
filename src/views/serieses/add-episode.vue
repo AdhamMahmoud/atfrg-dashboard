@@ -122,7 +122,7 @@
                     </b-card>
                     <b-card id="NewSubtitles">
                         <div slot="header">
-                            <strong>Subtitles</strong>
+                            <strong>Subtitles</strong> لو مفيش ترجمة اكتب لغة الترجمة - اسم المترجم - سيب ال لينك فاضي
                         </div>
                         <div slot="footer">
                             <b-button @click="AddnewSubtitle" size="sm" variant="primary"><i class="fa fa-dot-circle-o"></i> New Subtitle</b-button>
@@ -398,10 +398,7 @@ export default {
                 } else if (document.getElementById("SubtitleNameNew" + i).value.length == 0) {
                     this.ErrorMessage("SubtitleNameNew" + i);
                     return false;
-                } else if (document.getElementById("SubtitlePathNew" + i).value.length == 0) {
-                    this.ErrorMessage("SubtitlePathNew" + i);
-                    return false;
-                }
+                } 
             }
             // New Liks
             for (var i = 0; i < this.newLinks.length; i++) {

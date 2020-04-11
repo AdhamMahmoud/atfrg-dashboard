@@ -9,7 +9,7 @@ Vue.use(VueApollo)
 const AUTH_TOKEN = 'apollo-token'
 
 // Http endpoint
-const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'http://128.199.41.13:4466/'
+const httpEndpoint = process.env.VUE_APP_GRAPHQL_HTTP || 'https://atfrg.space/database/'
 // Files URL root
 export const filesRoot = process.env.VUE_APP_FILES_ROOT || httpEndpoint.substr(0, httpEndpoint.indexOf('/graphql'))
 
@@ -41,7 +41,7 @@ const defaultOptions = {
   // cache: myCache
 
   // Override the way the Authorization header is set
-   getAuth: (tokenName) => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InNlcnZpY2UiOiJkZWZhdWx0QGRlZmF1bHQiLCJyb2xlcyI6WyJhZG1pbiJdfSwiaWF0IjoxNTg2MDAxMTQ3LCJleHAiOjE1ODY2MDU5NDd9.1Whistg9P8H4Xq6q9-xsWU5OEiLpxP9656xvDJgHFkw'
+   getAuth: (tokenName) => 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7InNlcnZpY2UiOiJkZWZhdWx0QGRlZmF1bHQiLCJyb2xlcyI6WyJhZG1pbiJdfSwiaWF0IjoxNTg2NjEwMTEzLCJleHAiOjE1ODcyMTQ5MTN9.9HiseWjTpFm0ySYt0T2OrmPgG70oJ65cslLLKT9fqoA'
 
   // Additional ApolloClient options
   // apollo: { ... }
