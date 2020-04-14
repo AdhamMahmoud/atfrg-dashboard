@@ -213,6 +213,7 @@
                     <br>
                     <br>
                     <b-alert v-if="ChangesDone.length > 0" show variant="success">{{ChangesDone}}</b-alert>
+                     <b-button  v-if="ChangesDone.length > 0" @click="goLink()" size="sm" style="float:right;margin: 0 0.5rem;" variant="success">تجربة كاملة</b-button>
                     <b-alert v-if="ChangesError.length > 0" show variant="danger">{{ChangesError}}</b-alert>
                     <b-col cols="6" sm="4" md="3" lg="2" v-if="check">
                         <i class="fa fa-circle-o-notch fa-lg mt-4 fa-spin"></i>
@@ -281,6 +282,7 @@ export default {
             loaded: false,
             genres: [],
             languages: [],
+            itemid:"",
             imdpInfo: [],
             title: "",
             audience: "Unrated",
@@ -333,6 +335,9 @@ export default {
         }
     },
     methods: {
+        goLink(){
+            window.open('https://atfrg.online/movtest/' + this.itemid, '_blank');
+        },
         CheckImdp(id) {
             this.RemoveErrors();
             if (this.movies != null) {
@@ -475,6 +480,7 @@ export default {
                         });
                     }
                     this.ChangesDone = "Data Hass Been Updated Successfuly.";
+                    this.itemid = title;
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";
@@ -530,10 +536,6 @@ export default {
             }
             if (this.newPosters.length == 0) {
                 this.ErrorMessage("NewPosters");
-                return false;
-            }
-            if (this.newSubtitle.length == 0) {
-                this.ErrorMessage("NewSubtitles");
                 return false;
             }
             if (this.newLinks.length == 0) {

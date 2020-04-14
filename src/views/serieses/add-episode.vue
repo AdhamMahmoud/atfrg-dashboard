@@ -183,6 +183,7 @@
                     <br>
                     <br>
                     <b-alert v-if="ChangesDone.length > 0" show variant="success">{{ChangesDone}}</b-alert>
+                    <b-button  v-if="ChangesDone.length > 0" @click="goLink()" size="sm" style="float:right;margin: 0 0.5rem;" variant="success">تجربة كاملة</b-button>
                     <b-alert v-if="ChangesError.length > 0" show variant="danger">{{ChangesError}}</b-alert>
                     <b-col cols="6" sm="4" md="3" lg="2" v-if="check">
                         <i class="fa fa-circle-o-notch fa-lg mt-4 fa-spin"></i>
@@ -269,6 +270,7 @@ export default {
             AllLinks: [],
             IMDPPoster: "",
             tvSerieses: [],
+            newid:"",
 
         }
     },
@@ -295,6 +297,9 @@ export default {
         }
     },
     methods: {
+         goLink(){
+            window.open('https://atfrg.online/episodetest/' + this.newid, '_blank');
+        },
         AddEpsiode() {
             // Values
             if (this.Valadation() == true) {
@@ -365,6 +370,7 @@ export default {
                         }
                     });
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
+                    this.newid = data.data.createEpisode.id;
                     this.check = false;
                 }).catch((error) => {
                     this.ChangesDone = "";

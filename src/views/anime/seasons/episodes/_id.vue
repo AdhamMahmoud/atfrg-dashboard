@@ -13,6 +13,7 @@
                             <b-button v-else @click="Publish(episode.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
                             <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
                         </span>
+                        <b-button @click="goLink(episode.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="success">تجربة كاملة</b-button>
                     </div>
                     <!-- imdb  -->
                 
@@ -399,6 +400,9 @@ export default {
         }
     },
     methods: {
+        goLink(id){
+            window.open('https://atfrg.online/episodetest/' + id, '_blank');
+        },
         Deleteepisode(id) {
             this.$apollo.mutate({
                 mutation: Delete_episode,
@@ -727,7 +731,7 @@ export default {
     },
     mounted() {
         if (this.store.getters.role != "ADMIN") {
-            if (!(this.store.getters.genreTypes.includes("ANIME"))) {
+            if (!(this.store.getters.genreTypes.includes("TV"))) {
                 this.$router.push('/');
             }
         }

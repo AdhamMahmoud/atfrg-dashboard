@@ -13,6 +13,7 @@
                             <b-button v-else @click="Publish(movie.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="primary">Publish</b-button>
                             <b-button @click="dangerModal = true" style="float:right" size="sm" variant="danger">Delete</b-button>
                         </span>
+                          <b-button @click="goLink(movie.title)" size="sm" style="float:right;margin: 0 0.5rem;" variant="success">تجربة كاملة</b-button>
                     </div>
                     <!-- imdb  -->
                     <b-card>
@@ -532,6 +533,9 @@ export default {
         }
     },
     methods: {
+         goLink(title){
+            window.open('https://atfrg.online/movtest/' + title, '_blank');
+        },
         DeleteMovie(id) {
             this.$apollo.mutate({
                 mutation: Delete_Movie,
