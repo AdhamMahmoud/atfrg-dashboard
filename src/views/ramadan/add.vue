@@ -59,7 +59,7 @@
                             </b-form-group>
                             <b-form-group label="Poster Path" label-for="PosterPath" description="Please Enter Poster Path" :label-cols="3">
                                 <b-form-input v-if="IMDPPoster.length > 0" :value="IMDPPoster" :id="'PosterPathNew'+ index" type="text" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
-                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" value="http://cdn.atfrg.online/" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
+                                <b-form-input v-else :id="'PosterPathNew'+ index" type="text" value="https://cdn.atfrg.online/" placeholder="Please Enter Poster Path." autocomplete="PosterPath"></b-form-input>
 
                             </b-form-group>
                         </b-card>
