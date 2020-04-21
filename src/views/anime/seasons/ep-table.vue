@@ -3,7 +3,7 @@
     <div slot="header" v-html="caption"></div>
     <b-table :dark="dark" :hover="hover" :striped="striped" :bordered="bordered" :small="small" :fixed="fixed" responsive="sm" :items="items" :fields="captions" :current-page="currentPage" :per-page="perPage" @row-clicked="rowClicked">
         <template slot="Changes" slot-scope="data">
-            <router-link :to="'./serieses/seasons/episodes/' + data.item.id"><i class='fa fa-edit'></i></router-link>
+            <router-link :to="'./episodes/' + data.item.id"><i class='fa fa-edit'></i></router-link>
             <b-button @click="goLink(data.item.id)" size="sm" style="float:right;margin: 0 0.5rem;" variant="success">تجربة</b-button>
               <span v-if="store.getters.role == 'ADMIN'">
             <b-button v-if="data.item.isPublished" @click="Unpublish(data.item.id), data.item.isPublished = false" style="float:right;margin: 0 0.5rem;" size="sm" variant="primary">UnPublish</b-button>

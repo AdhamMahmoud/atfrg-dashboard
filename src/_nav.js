@@ -85,6 +85,24 @@ export default {
       ]
     },
     {
+      name: 'ramadan',
+      url: '/ramadan',
+      icon: 'fa fa-tv',
+      admin:false,
+      children: [
+        {
+          name: 'مسلسل جديد',
+          url: '/ramadan/add',
+          icon: 'fa fa-plus'
+        },
+        {
+          name: 'اضافة حلقة',
+          url: '/ramadan/add-episode',
+          icon: 'fa fa-plus'
+        },
+      ]
+    },
+    {
       name: 'Serieses',
       url: '/serieses',
       icon: 'fa fa-tv',

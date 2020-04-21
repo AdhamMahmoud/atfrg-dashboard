@@ -26,6 +26,9 @@ const MoviesList = () => import('@/views/movies/list')
 const AddMovie = () => import('@/views/movies/add')
 const Movie = () => import('@/views/movies/_id')
 
+const ramadanAdd  = () => import('@/views/ramadan/add')
+const AddEpisoderamadan  = () => import('@/views/ramadan/add-episode')
+const episoderamadan  = () => import('@/views/ramadan/episodes/_id')
 
 const SeriesesList = () => import('@/views/serieses/list')
 const SeasonsList = () => import('@/views/serieses/seasons-list')
@@ -245,6 +248,30 @@ function configRoutes() {
             {
               path: ':id',
               component: Movie
+            },
+          ]
+        },
+        {
+          path: 'ramadan',
+          redirect: '/ramadan/add',
+          name: 'ramadan',
+          component: {
+            render (c) { return c('router-view') }
+          },
+          children: [
+            {
+              path: 'add',
+              name: 'ramadan add',
+              component: ramadanAdd
+            },
+            {
+              path: 'add-episode',
+              name: 'Add New Episode',
+              component: AddEpisoderamadan
+            },
+            {
+              path: 'episodes/:id',
+              component: episoderamadan
             },
           ]
         },
