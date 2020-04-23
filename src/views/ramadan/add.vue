@@ -246,8 +246,8 @@ export default {
          AddSeason() {
                 var imdbId = null;
                 var SeriesTitle = document.getElementById("title").value;
-                var title = "الموسم الاول";
-                title = SeriesTitle + " " + title;
+                var title = "";
+                title = SeriesTitle;
                 var releaseDate1 = "24 apr 2020" + " 00:00 UTC";
                 var dateobj = new Date(releaseDate1);
                 var releaseDate = dateobj.toISOString();

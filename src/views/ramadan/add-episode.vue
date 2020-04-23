@@ -187,7 +187,7 @@ const Add_Epsiode = gql `
      create:$links
     },
     runtime:0,
-    isPublished:false,
+    isPublished:true,
     videoQualities:{set:$videoQualities}
   }){
     id
