@@ -100,6 +100,11 @@ export default {
           url: '/ramadan/add-episode',
           icon: 'fa fa-plus'
         },
+        {
+          name: 'الحلقات',
+          url: '/ramadan/episodesList',
+          icon: 'fa fa-plus'
+        },
       ]
     },
     {

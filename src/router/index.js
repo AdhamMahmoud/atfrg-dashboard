@@ -39,6 +39,7 @@ const Series = () => import('@/views/serieses/_id')
 const Season = () => import('@/views/serieses/seasons/_id')
 const episode = () => import('@/views/serieses/seasons/episodes/_id')
 
+const episodesRamadan  = () => import('@/views/ramadan/episodesList') 
 const AnimeList = () => import('@/views/anime/list')
 const AddAnime = () => import('@/views/anime/add')
 const Anime = () => import('@/views/anime/_id')
@@ -270,9 +271,16 @@ function configRoutes() {
               component: AddEpisoderamadan
             },
             {
+              path: 'episodesList',
+              path: 'episodeslist',
+              component: episodesRamadan
+            },
+            {
               path: 'episodes/:id',
               component: episoderamadan
             },
+
+            
           ]
         },
         {
