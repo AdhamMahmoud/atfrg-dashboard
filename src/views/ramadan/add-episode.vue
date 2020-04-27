@@ -143,7 +143,7 @@
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
-                                <b-form-input :id="'VideoPathNew' + index" type="text" value="https://AtfrgRamadan.b-cdn.net/" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
+                                <b-form-input :id="'VideoPathNew' + index" type="text" value="https://cdn.atfrg.online/" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                             </b-form-group>
                             <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>
                         </b-card>
@@ -399,8 +399,8 @@ export default {
         },
         LinkToken(path) {
             var crypto = require('crypto');
-            var securityKey = '7544a7f3-75bd-4456-a42b-b6c1e8f28255';
-            var newpath = path.substring(30, path.length);
+            var securityKey = '6ecb7c25-9744-498a-a49b-ae4c7980c861';
+            var newpath = path.substring(24, path.length);
             // Set the time of expiry to one hour from now
             var expires = Math.round(Date.now() / 1000) + 43200;
 
@@ -409,7 +409,7 @@ export default {
             var md5String = crypto.createHash("md5").update(hashableBase).digest("binary");
             var token = new Buffer(md5String, 'binary').toString('base64');
             token = token.replace(/\+/g, '-').replace(/\//g, '_').replace(/\=/g, '');
-            var url = 'https://AtfrgRamadan.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
+            var url = 'https://Atfrgonline.b-cdn.net' + newpath + '?token=' + token + '&expires=' + expires;
             return url;
         },
         CheckLink(id) {
