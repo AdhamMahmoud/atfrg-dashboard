@@ -172,7 +172,7 @@
                                 <b-form-input :id="'SubtitleNameNew' + index" type="text" placeholder="Please Enter Subtitle Name." autocomplete="SubtitleName"></b-form-input>
                             </b-form-group>
                             <b-form-group label="Subtitle Path" label-for="SubtitlePathNew" description="Please Enter Subtitle Path" :label-cols="3">
-                                <b-form-input :id="'SubtitlePathNew' + index" type="text" placeholder="Please Enter Subtitle Path." autocomplete="SubtitlePath"></b-form-input>
+                                <b-form-input :id="'SubtitlePathNew' + index" value="https://cdn.atfrg.online/" type="text" placeholder="Please Enter Subtitle Path." autocomplete="SubtitlePath"></b-form-input>
                             </b-form-group>
                         </b-card>
                     </b-card>
@@ -198,7 +198,7 @@
                                 </b-input-group>
                             </b-form-group>
                             <b-form-group label="Video Path" label-for="VideoPath" description="Please Enter Video Path" :label-cols="3">
-                                <b-form-input :id="'VideoPathNew' + index" type="text" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
+                                <b-form-input :id="'VideoPathNew' + index" type="text" value="https://cdn.atfrg.online/" placeholder="Please Enter Video Path." autocomplete="PosterPath"></b-form-input>
                                 <span style="color:red">( اتأكد من اسم الملف كويس ومن صيغة الفديو  )</span>
                             </b-form-group>
                              <b-button @click="CheckLink('VideoPathNew' + index)" style="float:right" size="sm" variant="primary">تجربة ال لينك</b-button>

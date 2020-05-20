@@ -129,7 +129,7 @@
                                 <b-form-input :id="'SubtitleNameNew' + index" type="text" placeholder="Please Enter Subtitle Name." autocomplete="SubtitleName"></b-form-input>
                             </b-form-group>
                             <b-form-group label="Subtitle Path" label-for="SubtitlePathNew" description="Please Enter Subtitle Path" :label-cols="3">
-                                <b-form-input :id="'SubtitlePathNew' + index" type="text" placeholder="Please Enter Subtitle Path." autocomplete="SubtitlePath"></b-form-input>
+                                <b-form-input :id="'SubtitlePathNew' + index" type="text" value="https://cdn.atfrg.online/" placeholder="Please Enter Subtitle Path." autocomplete="SubtitlePath"></b-form-input>
                             </b-form-group>
                         </b-card>
                     </b-card>
