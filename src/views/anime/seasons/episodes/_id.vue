@@ -731,7 +731,7 @@ export default {
     },
     mounted() {
         if (this.store.getters.role != "ADMIN") {
-            if (!(this.store.getters.genreTypes.includes("TV"))) {
+            if (!(this.store.getters.genreTypes.includes("ANIME"))) {
                 this.$router.push('/');
             }
         }
