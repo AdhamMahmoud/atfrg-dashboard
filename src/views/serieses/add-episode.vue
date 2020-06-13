@@ -246,6 +246,16 @@ const updateTvSeries = gql `
   }
 }
  `;
+  const updateTvSeries2 = gql `
+  mutation updateTvSeries($title:String!)
+  {
+  updateTvSeries(where:{slug:$title}, data:{
+    Production:UNKNOWN
+  }){
+    id
+  }
+}
+ `;
 export default {
     data() {
         return {
@@ -306,6 +316,7 @@ export default {
                 this.check = true;
                 var title = document.getElementById("title").value;
                 var Order = parseInt(document.getElementById("Order").value);
+                var SeriesTitle = document.getElementById("Series").value;
                 var SeasonTitle = document.getElementById("Season").value;
                 const videoQualitiesselected = document.querySelectorAll('#videoQualities option:checked');
                 var videoQualities = Array.from(videoQualitiesselected).map(el => el.value);
@@ -367,6 +378,12 @@ export default {
                         variables: {
                             title: SeasonTitle,
                             id: data.data.createEpisode.id,
+                        }
+                    });
+                    this.$apollo.mutate({
+                        mutation: updateTvSeries2,
+                        variables: {
+                            title: SeriesTitle,
                         }
                     });
                     this.ChangesDone = "Data Hass Been Added Successfuly.";
